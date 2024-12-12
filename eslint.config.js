@@ -1,28 +1,43 @@
-import js from '@eslint/js'
+import pluginJs from '@eslint/js'
+import importPlugin from 'eslint-plugin-import'
+import pluginReact from 'eslint-plugin-react'
 import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
+import { configs as tsEslintConfig } from 'typescript-eslint'
 
-export default tseslint.config(
-  { ignores: ['dist'] },
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+    { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
+    {
+        languageOptions: {
+            globals: globals.browser,
+            parser: '@typescript-eslint/parser',
+        },
     },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+    pluginJs.configs.recommended,
+    ...tsEslintConfig.recommended,
+    pluginReact.configs.flat.recommended,
+    importPlugin.flatConfigs.recommended,
+    importPlugin.flatConfigs.typescript,
+    {
+        rules: {
+            'react/react-in-jsx-scope': 'off',
+            'import/order': ['error', { alphabetize: { order: 'asc' } }],
+        },
+        settings: {
+            react: { version: 'detect' },
+            'import/parsers': {
+                '@typescript-eslint/parser': ['.ts', '.tsx'],
+            },
+            'import/resolver': {
+                node: {
+                    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                },
+                'typescript-bun': {
+                    // ^^ HERE! ^^
+                    project: true,
+                    alwaysTryTypes: true,
+                },
+            },
+        },
     },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
-    },
-  },
-)
+]
