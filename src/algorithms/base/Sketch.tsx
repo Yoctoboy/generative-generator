@@ -27,7 +27,6 @@ const Sketch = ({
         p5.setup = () => {
             p5.colorMode('hsb')
             p5.createCanvas(600, 600, p5.WEBGL)
-            // const slider = p5.createSlider(0, 255)
         }
 
         p5.draw = () => {
