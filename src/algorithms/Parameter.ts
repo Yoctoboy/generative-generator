@@ -1,5 +1,3 @@
-import { Sketch } from '@p5-wrapper/react'
-
 export type Parameter = {
     name: string
     minValue: number
@@ -8,7 +6,7 @@ export type Parameter = {
     step: number
 }
 
-export type ExtendedSketch = {
-    parameters: Parameter[]
-    sketch: Sketch
-}
+export type ParameterValues<T extends Parameter[]> = Record<
+    T[number]['name'],
+    number
+>
