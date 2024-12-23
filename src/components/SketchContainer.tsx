@@ -11,6 +11,7 @@ export const SketchContainer = ({
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                color: 'white',
                 backgroundColor: 'var(--background-grey)',
             }}
         >

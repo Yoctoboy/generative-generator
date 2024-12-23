@@ -1,10 +1,13 @@
 import { ThemeProvider } from '@mui/material'
 import { useState } from 'react'
-import { ParameterValues } from './algorithms/Parameter'
+import {
+    getParametersInitialValues,
+    ParameterValues,
+} from './algorithms/Parameter'
 import { SketchType } from './algorithms/Sketch'
 import BaseSketch from './algorithms/base/BaseSketch'
 import DiamondSquareSketch from './algorithms/diamond-square/DiamondSquareSketch'
-import { getParametersInitialValues } from './algorithms/getParametersInitialValues'
+import SortedFaceSketch from './algorithms/sorted-face/SortedFaceSketch'
 import { PageContainer } from './components/PageContainer'
 import { ParameterSlider } from './components/ParameterSlider'
 import { Sidebar } from './components/Sidebar'
@@ -12,12 +15,11 @@ import { SketchContainer } from './components/SketchContainer'
 import { SketchSelector } from './components/SketchSelector'
 import { theme } from './theme'
 
-const availableSketches = [BaseSketch, DiamondSquareSketch]
+const availableSketches = [BaseSketch, DiamondSquareSketch, SortedFaceSketch]
 
 function App() {
-    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(
-        availableSketches[0]
-    )
+    const [CurrentSketch, setCurrentSketch] =
+        useState<SketchType>(SortedFaceSketch)
     const [paramValues, setParamValues] = useState<
         ParameterValues<typeof CurrentSketch.parameters>
     >(getParametersInitialValues(CurrentSketch.parameters))
