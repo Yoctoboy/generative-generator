@@ -1,7 +1,7 @@
 import { P5CanvasInstance, ReactP5Wrapper } from '@p5-wrapper/react'
 import { Parameter, ParameterValues } from '../Parameter'
 
-const parameters: Parameter[] = [
+const parameters = [
     {
         name: 'Speed',
         minValue: 0.001,
@@ -16,7 +16,14 @@ const parameters: Parameter[] = [
         initialValue: 274,
         step: 1,
     },
-]
+    {
+        name: 'Background Saturation',
+        minValue: 0,
+        maxValue: 100,
+        initialValue: 30,
+        step: 1,
+    },
+] as const satisfies Parameter[]
 
 const Sketch = ({
     paramValues,
@@ -30,7 +37,11 @@ const Sketch = ({
         }
 
         p5.draw = () => {
-            p5.background(paramValues['Background Hue'], 40, 100)
+            p5.background(
+                paramValues['Background Hue'],
+                paramValues['Background Saturation'],
+                100
+            )
             p5.normalMaterial()
             p5.push()
             p5.rotateZ(p5.frameCount * paramValues.Speed)

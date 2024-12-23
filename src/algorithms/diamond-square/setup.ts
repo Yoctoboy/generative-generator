@@ -5,14 +5,22 @@ const getRandomFloat = (min: number, max: number) => {
     return Math.random() * (max - min) + min
 }
 
-export const parameters: Parameter[] = []
+export const parameters = [
+    {
+        name: 'Background Hue',
+        minValue: 0,
+        maxValue: 360,
+        initialValue: 274,
+        step: 1,
+    },
+] as const satisfies Parameter[]
 
 export const setup = (
     p5: P5CanvasInstance,
     paramValues: ParameterValues<typeof parameters>
 ) => {
     return () => {
-        console.log(paramValues)
+        p5.colorMode('hsb')
         // global params
         const size = 513 // must be 2**n + 1
         const randomDivision = 1.3
@@ -93,7 +101,11 @@ export const setup = (
             for (let y = 0; y < size; y += 1) {
                 mat[x][y] =
                     ((mat[x][y] - minalt) / (maxalt - minalt)) * maxColor
-                col = p5.color(Math.floor(mat[x][y]), 0, Math.floor(mat[x][y])) // purple-ish color
+                col = p5.color(
+                    paramValues['Background Hue'],
+                    Math.floor(mat[x][y]),
+                    Math.floor(mat[x][y])
+                )
                 p5.set(x, y, col)
             }
         }

@@ -12,7 +12,7 @@ export const Sidebar = ({ children }: { children: React.ReactNode }) => {
                 boxSizing: 'border-box',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '2rem',
+                gap: '2.5rem',
             }}
         >
             {children}
