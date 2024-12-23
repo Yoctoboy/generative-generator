@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Parameter, ParameterValues } from './algorithms/Parameter'
+import { ParameterValues } from './algorithms/Parameter'
 import { SketchType } from './algorithms/Sketch'
 import BaseSketch from './algorithms/base/BaseSketch'
 import DiamondSquareSketch from './algorithms/diamond-square/DiamondSquareSketch'
@@ -17,10 +17,10 @@ function App() {
         availableSketches[0]
     )
     const [paramValues, setParamValues] = useState<
-        ParameterValues<Parameter[]>
-    >(getParametersInitialValues(DiamondSquareSketch.parameters))
+        ParameterValues<typeof CurrentSketch.parameters>
+    >(getParametersInitialValues(CurrentSketch.parameters))
     const setSingleParamValue = (
-        paramName: (typeof DiamondSquareSketch.parameters)[number]['name']
+        paramName: (typeof CurrentSketch.parameters)[number]['name']
     ) => {
         return (value: number) =>
             setParamValues({ ...paramValues, [paramName]: value })
@@ -37,9 +37,6 @@ function App() {
                     currentSketch={CurrentSketch}
                     setCurrentSketch={setCurrentSketch}
                 />
-                <Sidebar.SketchTitle>
-                    {CurrentSketch.sketchName}
-                </Sidebar.SketchTitle>
                 <Sidebar.Divider />
                 {CurrentSketch.parameters.map((parameter) => (
                     <ParameterSlider
