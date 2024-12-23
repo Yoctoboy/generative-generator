@@ -1,18 +1,26 @@
 import { useState } from 'react'
 import { Parameter, ParameterValues } from './algorithms/Parameter'
-import Sketch from './algorithms/base/Sketch'
+import { SketchType } from './algorithms/Sketch'
+import BaseSketch from './algorithms/base/BaseSketch'
+import DiamondSquareSketch from './algorithms/diamond-square/DiamondSquareSketch'
 import { getParametersInitialValues } from './algorithms/getParametersInitialValues'
 import { PageContainer } from './components/PageContainer'
 import { ParameterSlider } from './components/ParameterSlider'
 import { Sidebar } from './components/Sidebar'
 import { SketchContainer } from './components/SketchContainer'
+import { SketchSelector } from './components/SketchSelector'
+
+const availableSketches = [BaseSketch, DiamondSquareSketch]
 
 function App() {
+    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(
+        availableSketches[0]
+    )
     const [paramValues, setParamValues] = useState<
         ParameterValues<Parameter[]>
-    >(getParametersInitialValues(Sketch.parameters))
+    >(getParametersInitialValues(DiamondSquareSketch.parameters))
     const setSingleParamValue = (
-        paramName: (typeof Sketch.parameters)[number]['name']
+        paramName: (typeof DiamondSquareSketch.parameters)[number]['name']
     ) => {
         return (value: number) =>
             setParamValues({ ...paramValues, [paramName]: value })
@@ -21,12 +29,19 @@ function App() {
     return (
         <PageContainer>
             <SketchContainer>
-                <Sketch paramValues={paramValues} />
+                <CurrentSketch.sketch paramValues={paramValues} />
             </SketchContainer>
             <Sidebar>
-                <Sidebar.SketchTitle>{Sketch.sketchName}</Sidebar.SketchTitle>
+                <SketchSelector
+                    allSketches={availableSketches}
+                    currentSketch={CurrentSketch}
+                    setCurrentSketch={setCurrentSketch}
+                />
+                <Sidebar.SketchTitle>
+                    {CurrentSketch.sketchName}
+                </Sidebar.SketchTitle>
                 <Sidebar.Divider />
-                {Sketch.parameters.map((parameter) => (
+                {CurrentSketch.parameters.map((parameter) => (
                     <ParameterSlider
                         value={paramValues[parameter.name]}
                         setValue={setSingleParamValue(parameter.name)}

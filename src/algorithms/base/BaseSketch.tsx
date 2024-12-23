@@ -43,7 +43,9 @@ const Sketch = ({
     return <ReactP5Wrapper sketch={sketch} />
 }
 
-Sketch.parameters = parameters
-Sketch.sketchName = 'Base sketch test'
-
-export default Sketch
+const BaseSketch = {
+    sketch: Sketch,
+    parameters,
+    sketchName: 'Base sketch test',
+}
+export default BaseSketch
