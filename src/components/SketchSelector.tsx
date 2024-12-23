@@ -1,5 +1,3 @@
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import {
     FormControl,
     InputBase,
@@ -8,24 +6,18 @@ import {
     styled,
 } from '@mui/material'
 import MenuItem from '@mui/material/MenuItem'
-import { useState } from 'react'
 import { SketchType } from '../algorithms/Sketch'
-import { Sidebar } from './Sidebar'
 
 const StyledFormControl = styled(FormControl)(() => ({
     '& .MuiInputBase-root': {
         color: 'white',
         fontSize: 20,
-        fontFamily: 'Montserrat',
         transition: 'background-color 0.3s',
-        border: '1px solid grey',
-        borderRadius: '4px',
+        border: '1px solid var(--disabled-grey)',
+        borderRadius: '8px',
         '&:focus': {
             outline: 'none',
             backgroundColor: 'white',
-        },
-        '&:hover': {
-            color: 'black',
         },
     },
     '& .MuiSelect-icon': {
@@ -37,6 +29,7 @@ const StyledSelect = styled(InputBase)(() => ({
     '& .MuiInputBase-input': {
         color: 'white',
         border: 'none',
+        textAlign: 'center',
         background: 'transparent',
         transition: 'color 0.3s',
         padding: '10px 0 !important',
@@ -49,7 +42,16 @@ const StyledSelect = styled(InputBase)(() => ({
     },
     '&:hover': {
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        color: 'black',
         cursor: 'pointer',
+    },
+}))
+
+const StyledMenuItem = styled(MenuItem)(() => ({
+    fontSize: '1.2rem',
+    '&:hover': {
+        backgroundColor: 'white',
+        color: 'black',
     },
 }))
 
@@ -76,7 +78,9 @@ export const SketchSelector = ({
                 MenuProps={{
                     PaperProps: {
                         sx: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.9)', // Dropdown menu background
+                            border: '1px solid var(--disabled-grey)',
+                            borderRadius: '8px',
+                            backgroundColor: 'rgba(0, 0, 0)', // Dropdown menu background
                             color: 'white', // Dropdown menu text color
                         },
                     },
@@ -89,11 +93,9 @@ export const SketchSelector = ({
             >
                 {allSketches.map((sketch) => (
                     // @ts-expect-error MUI does not let you use any object as value, but it works fine (only type checking is fucked)
-                    <MenuItem key={sketch.sketchName} value={sketch}>
-                        <Sidebar.SketchTitle>
-                            {sketch.sketchName}
-                        </Sidebar.SketchTitle>
-                    </MenuItem>
+                    <StyledMenuItem key={sketch.sketchName} value={sketch}>
+                        {sketch.sketchName}
+                    </StyledMenuItem>
                 ))}
             </Select>
         </StyledFormControl>

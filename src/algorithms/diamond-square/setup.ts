@@ -24,7 +24,7 @@ export const setup = (
         // global params
         const size = 513 // must be 2**n + 1
         const randomDivision = 1.3
-        const maxColor = 120
+        const maxColor = 100
 
         p5.createCanvas(size, size)
 
@@ -44,7 +44,6 @@ export const setup = (
         let randomFactor = 10
         while (space > 1) {
             halfspace = space / 2
-
             // diamond step
             for (let x = halfspace; x < size; x += space) {
                 for (let y = halfspace; y < size; y += space) {

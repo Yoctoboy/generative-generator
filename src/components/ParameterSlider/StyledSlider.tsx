@@ -10,9 +10,7 @@ export const StyledSlider = styled(Slider)(() => ({
     },
     '& .MuiSlider-valueLabel': {
         top: 45,
-        fontFamily: 'Montserrat',
         fontSize: 13,
-        fontWeight: 'normal',
         backgroundColor: 'unset',
         color: 'white',
         '&::before': {

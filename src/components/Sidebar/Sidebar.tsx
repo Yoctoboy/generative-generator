@@ -1,5 +1,4 @@
 import { Divider } from './Divider'
-import { SketchTitle } from './SketchTitle'
 
 export const Sidebar = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -21,4 +20,3 @@ export const Sidebar = ({ children }: { children: React.ReactNode }) => {
 }
 
 Sidebar.Divider = Divider
-Sidebar.SketchTitle = SketchTitle

@@ -1,5 +1,6 @@
 import { P5CanvasInstance, ReactP5Wrapper } from '@p5-wrapper/react'
 import { Parameter, ParameterValues } from '../Parameter'
+import { SketchType } from '../Sketch'
 
 const parameters = [
     {
@@ -54,7 +55,7 @@ const Sketch = ({
     return <ReactP5Wrapper sketch={sketch} />
 }
 
-const BaseSketch = {
+const BaseSketch: SketchType<typeof parameters> = {
     sketch: Sketch,
     parameters,
     sketchName: 'Base sketch test',

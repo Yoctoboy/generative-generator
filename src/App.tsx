@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@mui/material'
 import { useState } from 'react'
 import { ParameterValues } from './algorithms/Parameter'
 import { SketchType } from './algorithms/Sketch'
@@ -9,6 +10,7 @@ import { ParameterSlider } from './components/ParameterSlider'
 import { Sidebar } from './components/Sidebar'
 import { SketchContainer } from './components/SketchContainer'
 import { SketchSelector } from './components/SketchSelector'
+import { theme } from './theme'
 
 const availableSketches = [BaseSketch, DiamondSquareSketch]
 
@@ -19,6 +21,7 @@ function App() {
     const [paramValues, setParamValues] = useState<
         ParameterValues<typeof CurrentSketch.parameters>
     >(getParametersInitialValues(CurrentSketch.parameters))
+
     const setSingleParamValue = (
         paramName: (typeof CurrentSketch.parameters)[number]['name']
     ) => {
@@ -27,27 +30,29 @@ function App() {
     }
 
     return (
-        <PageContainer>
-            <SketchContainer>
-                <CurrentSketch.sketch paramValues={paramValues} />
-            </SketchContainer>
-            <Sidebar>
-                <SketchSelector
-                    allSketches={availableSketches}
-                    currentSketch={CurrentSketch}
-                    setCurrentSketch={setCurrentSketch}
-                />
-                <Sidebar.Divider />
-                {CurrentSketch.parameters.map((parameter) => (
-                    <ParameterSlider
-                        value={paramValues[parameter.name]}
-                        setValue={setSingleParamValue(parameter.name)}
-                        key={parameter.name}
-                        {...parameter}
+        <ThemeProvider theme={theme}>
+            <PageContainer>
+                <SketchContainer>
+                    <CurrentSketch.sketch paramValues={paramValues} />
+                </SketchContainer>
+                <Sidebar>
+                    <SketchSelector
+                        allSketches={availableSketches}
+                        currentSketch={CurrentSketch}
+                        setCurrentSketch={setCurrentSketch}
                     />
-                ))}
-            </Sidebar>
-        </PageContainer>
+                    <Sidebar.Divider />
+                    {CurrentSketch.parameters.map((parameter) => (
+                        <ParameterSlider
+                            value={paramValues[parameter.name]}
+                            setValue={setSingleParamValue(parameter.name)}
+                            key={parameter.name}
+                            {...parameter}
+                        />
+                    ))}
+                </Sidebar>
+            </PageContainer>
+        </ThemeProvider>
     )
 }
 

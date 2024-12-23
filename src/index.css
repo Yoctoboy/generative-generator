@@ -3,10 +3,10 @@
   --disabled-grey: #777777;
   --background-grey: #222222;
   --white-title: #ffffff;
-  font-family: Montserrat;
 }
 
 body {
   margin: 0;
   padding: 0;
+  font-family: Montserrat;
 }

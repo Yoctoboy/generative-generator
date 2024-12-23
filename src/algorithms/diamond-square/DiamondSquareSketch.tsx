@@ -1,5 +1,6 @@
 import { P5CanvasInstance, ReactP5Wrapper } from '@p5-wrapper/react'
 import { ParameterValues } from '../Parameter'
+import { SketchType } from '../Sketch'
 import { parameters, setup } from './setup'
 
 const Sketch = ({
@@ -13,7 +14,7 @@ const Sketch = ({
     return <ReactP5Wrapper sketch={sketch} />
 }
 
-const DiamondSquareSketch = {
+const DiamondSquareSketch: SketchType<typeof parameters> = {
     sketch: Sketch,
     parameters,
     sketchName: 'Diamond Square',
