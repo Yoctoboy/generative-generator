@@ -1,6 +1,5 @@
 import { ThemeProvider } from '@mui/material'
-import { useDebounce } from '@uidotdev/usehooks'
-import { useDeferredValue, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SketchType } from './algorithms/Sketch'
 import BaseSketch from './algorithms/base/BaseSketch'
 import DiamondSquareSketch from './algorithms/diamond-square/DiamondSquareSketch'
@@ -20,7 +19,7 @@ const availableSketches = [BaseSketch, DiamondSquareSketch, SortedFaceSketch]
 
 function App() {
     const [CurrentSketch, setCurrentSketch] =
-        useState<SketchType>(SortedFaceSketch)
+        useState<SketchType>(DiamondSquareSketch)
     const [paramValues, setParamValues] = useState<
         ParameterValues<typeof CurrentSketch.parameters>
     >(getParametersInitialValues(CurrentSketch.parameters))

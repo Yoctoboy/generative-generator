@@ -27,7 +27,7 @@ export const setup = (
         const randomDivision = 1.3
         const maxColor = 100
 
-        p5.createCanvas(size, size)
+        const canvas = p5.createCanvas(size, size)
 
         // initialize 2D altitude matrix
         const mat = new Array(size).fill(0).map(() => new Array(size).fill(0))
