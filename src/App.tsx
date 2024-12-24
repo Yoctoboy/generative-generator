@@ -1,14 +1,15 @@
 import { ThemeProvider } from '@mui/material'
-import { useEffect, useState } from 'react'
-import {
-    getParametersInitialValues,
-    ParameterValues,
-} from './algorithms/Parameter'
+import { useDebounce } from '@uidotdev/usehooks'
+import { useDeferredValue, useEffect, useState } from 'react'
 import { SketchType } from './algorithms/Sketch'
 import BaseSketch from './algorithms/base/BaseSketch'
 import DiamondSquareSketch from './algorithms/diamond-square/DiamondSquareSketch'
 import SortedFaceSketch from './algorithms/sorted-face/SortedFaceSketch'
 import { PageContainer } from './components/PageContainer'
+import {
+    getParametersInitialValues,
+    ParameterValues,
+} from './components/Parameter'
 import { ParameterSlider } from './components/ParameterSlider'
 import { Sidebar } from './components/Sidebar'
 import { SketchContainer } from './components/SketchContainer'

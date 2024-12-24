@@ -1,5 +1,5 @@
 import { P5CanvasInstance, ReactP5Wrapper } from '@p5-wrapper/react'
-import { ParameterValues } from '../Parameter'
+import { ParameterValues } from '../../components/Parameter'
 import { SketchType } from '../Sketch'
 import { seedRandomnessModules } from '../utils/seedRandomnessModules'
 import { parameters, setup } from './setup'

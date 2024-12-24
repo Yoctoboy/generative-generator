@@ -1,5 +1,5 @@
 import { P5CanvasInstance, ReactP5Wrapper } from '@p5-wrapper/react'
-import { Parameter, ParameterValues } from '../Parameter'
+import { Parameter, ParameterValues } from '../../components/Parameter'
 import { SketchType } from '../Sketch'
 import { preload, setup } from './setup'
 

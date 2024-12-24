@@ -1,4 +1,4 @@
-import { Parameter, ParameterValues } from './Parameter'
+import { Parameter, ParameterValues } from '../components/Parameter'
 
 export type SketchType<T extends Parameter[] = Parameter[]> = {
     sketch: ({

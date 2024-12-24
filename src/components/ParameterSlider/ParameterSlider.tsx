@@ -1,5 +1,5 @@
 import React from 'react'
-import { Parameter } from '../../algorithms/Parameter'
+import { Parameter } from '../Parameter'
 import { StyledSlider } from './StyledSlider'
 import { WhiteText } from './WhiteText'
 

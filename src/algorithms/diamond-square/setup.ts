@@ -1,5 +1,9 @@
 import { P5CanvasInstance } from '@p5-wrapper/react'
-import { Parameter, ParameterValues, randomSeedParameter } from '../Parameter'
+import {
+    Parameter,
+    ParameterValues,
+    randomSeedParameter,
+} from '../../components/Parameter'
 
 export const parameters = [
     randomSeedParameter,
