@@ -1,3 +1,4 @@
+import { DownloadButton } from '../DownloadButton'
 import { Divider } from './Divider'
 
 export const Sidebar = ({ children }: { children: React.ReactNode }) => {
@@ -11,10 +12,22 @@ export const Sidebar = ({ children }: { children: React.ReactNode }) => {
                 boxSizing: 'border-box',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '2.5rem',
+                justifyContent: 'space-around',
             }}
         >
-            {children}
+            <div
+                style={{
+                    backgroundColor: 'var(--sidebar-background)',
+                    boxSizing: 'border-box',
+                    display: 'flex',
+                    flex: 1,
+                    flexDirection: 'column',
+                    gap: '2.5rem',
+                }}
+            >
+                {children}
+            </div>
+            <DownloadButton />
         </div>
     )
 }
