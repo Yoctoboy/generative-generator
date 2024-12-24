@@ -6,7 +6,8 @@ import { preload, setup } from './setup'
 const parameters = [] as const satisfies Parameter[]
 
 const Sketch = ({
-    paramValues,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    paramValues: _paramValues,
 }: {
     paramValues: ParameterValues<typeof parameters>
 }) => {

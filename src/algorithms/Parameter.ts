@@ -21,3 +21,11 @@ export const getParametersInitialValues = <T extends Parameter[]>(
         }
     }, {} as ParameterValues<T>)
 }
+
+export const randomSeedParameter: Parameter = {
+    name: 'Random Seed',
+    minValue: 0,
+    maxValue: 1e9,
+    initialValue: Math.floor(Math.random() * 1e9),
+    step: 1,
+}

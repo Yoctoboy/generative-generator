@@ -204,7 +204,6 @@ const drawPure = (p5: P5CanvasInstance, matrixToFollow: PixelMatrix) => {
 
 export const setup = (p5: P5CanvasInstance) => {
     return () => {
-        console.log('setup')
         p5.createCanvas(canvasWidth, canvasHeight)
         p5.image(img, 0, 0, canvasWidth, canvasHeight)
         // put setup code here
@@ -257,7 +256,5 @@ export const setup = (p5: P5CanvasInstance) => {
             drawPure(p5, new PixelMatrix(matrixToFollow))
             pass++
         }
-
-        console.log('setup finished')
     }
 }

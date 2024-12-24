@@ -1,11 +1,8 @@
 import { P5CanvasInstance } from '@p5-wrapper/react'
-import { Parameter, ParameterValues } from '../Parameter'
-
-const getRandomFloat = (min: number, max: number) => {
-    return Math.random() * (max - min) + min
-}
+import { Parameter, ParameterValues, randomSeedParameter } from '../Parameter'
 
 export const parameters = [
+    randomSeedParameter,
     {
         name: 'Background Hue',
         minValue: 0,
@@ -53,7 +50,7 @@ export const setup = (
                             mat[x + halfspace][y - halfspace] +
                             mat[x + halfspace][y + halfspace]) /
                         4
-                    result = avg + getRandomFloat(-randomFactor, randomFactor)
+                    result = avg + p5.random(-randomFactor, randomFactor)
                     mat[x][y] = result
                     minalt = Math.min(minalt, result)
                     maxalt = Math.max(maxalt, result)
@@ -85,7 +82,7 @@ export const setup = (
                         n += 1
                     }
                     avg = s / n
-                    result = avg + getRandomFloat(-randomFactor, randomFactor)
+                    result = avg + p5.random(-randomFactor, randomFactor)
                     mat[x][y] = result
                     minalt = Math.min(minalt, result)
                     maxalt = Math.max(maxalt, result)
