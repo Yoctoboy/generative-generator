@@ -7,7 +7,7 @@ export const Sidebar = ({ children }: { children: React.ReactNode }) => {
                 width: '26%',
                 backgroundColor: 'var(--sidebar-background)',
                 height: '100vh',
-                padding: '2rem 1rem',
+                padding: '2rem 1.5rem',
                 boxSizing: 'border-box',
                 display: 'flex',
                 flexDirection: 'column',

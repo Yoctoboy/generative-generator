@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     getParametersInitialValues,
     ParameterValues,
@@ -23,6 +23,10 @@ function App() {
     const [paramValues, setParamValues] = useState<
         ParameterValues<typeof CurrentSketch.parameters>
     >(getParametersInitialValues(CurrentSketch.parameters))
+
+    useEffect(() => {
+        setParamValues(getParametersInitialValues(CurrentSketch.parameters))
+    }, [CurrentSketch])
 
     const setSingleParamValue = (
         paramName: (typeof CurrentSketch.parameters)[number]['name']

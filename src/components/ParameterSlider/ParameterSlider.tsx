@@ -26,7 +26,7 @@ export const ParameterSlider = ({
             <WhiteText>{name}</WhiteText>
             <StyledSlider
                 aria-label={`${name}-slider`}
-                value={value}
+                value={value ?? initialValue}
                 defaultValue={initialValue}
                 onChange={handleChange}
                 min={minValue}

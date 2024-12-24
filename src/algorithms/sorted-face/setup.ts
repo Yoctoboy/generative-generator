@@ -33,7 +33,7 @@ let lineAlpha = 45
 
 const getImagePixels = () => {
     img.loadPixels()
-    const flatPixels = img.pixels
+    const flatPixels: Uint8ClampedArray = img.pixels
     const imgPixels: PixelMatrixObjectType = new Array(canvasHeight)
     for (let i = 0; i < canvasHeight; i++) {
         imgPixels[i] = []
@@ -42,7 +42,7 @@ const getImagePixels = () => {
                 flatPixels.subarray(
                     i * 4 * canvasWidth + 4 * j,
                     i * 4 * canvasWidth + 4 * j + 4
-                )
+                ) as unknown as Pixel
             )
         }
     }

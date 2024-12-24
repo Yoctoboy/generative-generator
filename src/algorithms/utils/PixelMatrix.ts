@@ -1,4 +1,4 @@
-export type Pixel = [number, number, number]
+export type Pixel = [number, number, number, number]
 export type PixelMatrixObjectType = Pixel[][]
 
 export class PixelMatrix {
