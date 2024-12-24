@@ -1,0 +1,12 @@
+diff --git a/src/image/p5.Image.d.ts b/src/image/p5.Image.d.ts
+index 39cf23b45fb924dc89ba7f9564d2c2e632fc9e63..b31bc6f3e7c647d70efc37bf0cd087cbf4a9ed7d 100644
+--- a/src/image/p5.Image.d.ts
++++ b/src/image/p5.Image.d.ts
+@@ -415,6 +415,6 @@ declare module '../../index' {
+          *   data has been modified, the updatePixels()
+          *   function must be run to update the changes.
+          */
+-        pixels: number[];
++        pixels: Uint8ClampedArray;
+     }
+ }
