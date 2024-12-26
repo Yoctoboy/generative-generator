@@ -63,3 +63,10 @@ export const poweredClip = (
         min
     )
 }
+
+export function gaussianFunction(mu: number, sigma: number, x: number) {
+    return (
+        (1 / (sigma * Math.sqrt(2 * Math.PI))) *
+        Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2))
+    )
+}

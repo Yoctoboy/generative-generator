@@ -4,6 +4,7 @@ import { SketchType } from './algorithms/Sketch'
 import BaseSketch from './algorithms/base/BaseSketch'
 import DiamondSquareSketch from './algorithms/diamond-square/DiamondSquareSketch'
 import SortedFaceSketch from './algorithms/sorted-face/SortedFaceSketch'
+import SquareCloudsSketch from './algorithms/square-clouds/SquareCloudsSketch'
 import { PageContainer } from './components/PageContainer'
 import {
     getParametersInitialValues,
@@ -15,7 +16,12 @@ import { SketchContainer } from './components/SketchContainer'
 import { SketchSelector } from './components/SketchSelector'
 import { theme } from './theme'
 
-const availableSketches = [BaseSketch, DiamondSquareSketch, SortedFaceSketch]
+const availableSketches = [
+    BaseSketch,
+    DiamondSquareSketch,
+    SortedFaceSketch,
+    SquareCloudsSketch,
+]
 
 function App() {
     const [CurrentSketch, setCurrentSketch] =
