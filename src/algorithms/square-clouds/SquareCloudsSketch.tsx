@@ -12,9 +12,9 @@ const parameters: Parameter[] = [
     {
         name: 'Island Amount',
         minValue: 4,
-        maxValue: 20,
+        maxValue: 30,
         step: 1,
-        initialValue: 5,
+        initialValue: 10,
     },
 ]
 
@@ -64,25 +64,13 @@ export const Sketch = ({
         1,
         10000
     )
-    camera.position.set(1300, 300, 1300)
-    camera.lookAt(0, -500, 0)
+    camera.position.set(MAXX + 300, 200, MAXZ + 300)
+    camera.lookAt(MAXX / 2, -4000, MAXZ / 2)
 
     return (
         <Canvas camera={camera}>
             <CameraControls ref={cameraControlRef} />
-            <ambientLight intensity={Math.PI / 2} />
-            <spotLight
-                position={[10, 10, 10]}
-                angle={0.15}
-                penumbra={1}
-                decay={0}
-                intensity={Math.PI}
-            />
-            <pointLight
-                position={[-10, -10, -10]}
-                decay={0}
-                intensity={Math.PI}
-            />
+            <ambientLight intensity={Math.PI} />
             {islandsCoords.map((coords, index) => (
                 <Island key={index} {...coords} size={10} />
             ))}
