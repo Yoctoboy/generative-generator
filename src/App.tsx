@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 import { SketchType } from './algorithms/Sketch'
 import BaseSketch from './algorithms/base/BaseSketch'
 import DiamondSquareSketch from './algorithms/diamond-square/DiamondSquareSketch'
@@ -13,6 +14,7 @@ import {
 import { ParameterSlider } from './components/ParameterSlider'
 import { Sidebar } from './components/Sidebar'
 import { SketchContainer } from './components/SketchContainer'
+import { SketchError } from './components/SketchError'
 import { SketchSelector } from './components/SketchSelector'
 import { theme } from './theme'
 
@@ -45,7 +47,9 @@ function App() {
         <ThemeProvider theme={theme}>
             <PageContainer>
                 <SketchContainer>
-                    <CurrentSketch.sketch paramValues={paramValues} />
+                    <ErrorBoundary FallbackComponent={SketchError}>
+                        <CurrentSketch.sketch paramValues={paramValues} />
+                    </ErrorBoundary>
                 </SketchContainer>
                 <Sidebar>
                     <SketchSelector
