@@ -47,7 +47,7 @@ export const SketchSelector = ({
                 IconComponent={() => <></>}
             >
                 {allSketches.map((sketch) => (
-                    // @ts-expect-error MUI does not let you use any object as value, but it works fine (only type checking is fucked)
+                    // @ts-expect-error MUI does not let you use any object as value, but it works fine (only type checking is crappy)
                     <MenuItem key={sketch.sketchName} value={sketch}>
                         {sketch.sketchName}
                     </MenuItem>
