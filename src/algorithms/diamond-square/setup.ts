@@ -14,6 +14,13 @@ export const parameters = [
         initialValue: 274,
         step: 1,
     },
+    {
+        name: 'Max Saturation',
+        minValue: 0,
+        maxValue: 100,
+        initialValue: 80,
+        step: 1,
+    },
 ] as const satisfies Parameter[]
 
 export const setup = (
@@ -25,9 +32,9 @@ export const setup = (
         // global params
         const size = 513 // must be 2**n + 1
         const randomDivision = 1.3
-        const maxColor = 100
+        const maxColor = paramValues['Max Saturation']
 
-        const canvas = p5.createCanvas(size, size)
+        p5.createCanvas(size, size)
 
         // initialize 2D altitude matrix
         const mat = new Array(size).fill(0).map(() => new Array(size).fill(0))
@@ -42,7 +49,11 @@ export const setup = (
             minalt = 100000.0,
             maxalt = -100000.0,
             result
-        let randomFactor = 10
+        let randomFactor = 100 // kinda useless value since everything is rescaled from 0 to maxColor in the end
+        mat[0][0] = p5.random(-randomFactor, randomFactor)
+        mat[0][size - 1] = p5.random(-randomFactor, randomFactor)
+        mat[size - 1][0] = p5.random(-randomFactor, randomFactor)
+        mat[size - 1][size - 1] = p5.random(-randomFactor, randomFactor)
         while (space > 1) {
             halfspace = space / 2
             // diamond step
@@ -56,8 +67,6 @@ export const setup = (
                         4
                     result = avg + p5.random(-randomFactor, randomFactor)
                     mat[x][y] = result
-                    minalt = Math.min(minalt, result)
-                    maxalt = Math.max(maxalt, result)
                 }
             }
 
@@ -88,8 +97,6 @@ export const setup = (
                     avg = s / n
                     result = avg + p5.random(-randomFactor, randomFactor)
                     mat[x][y] = result
-                    minalt = Math.min(minalt, result)
-                    maxalt = Math.max(maxalt, result)
                 }
             }
             randomFactor /= randomDivision
@@ -97,6 +104,12 @@ export const setup = (
         }
 
         // rescale altitudes between 0 and maxcolor and set pixels accordingly
+        for (let x = 0; x < size; x += 1) {
+            for (let y = 0; y < size; y += 1) {
+                minalt = Math.min(minalt, mat[x][y])
+                maxalt = Math.max(maxalt, mat[x][y])
+            }
+        }
         for (let x = 0; x < size; x += 1) {
             for (let y = 0; y < size; y += 1) {
                 mat[x][y] =
