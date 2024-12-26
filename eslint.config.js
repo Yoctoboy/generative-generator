@@ -22,6 +22,7 @@ export default [
         rules: {
             'react/react-in-jsx-scope': 'off',
             'import/order': ['error', { alphabetize: { order: 'asc' } }],
+            'react/no-unknown-property': ['off', { ignore: ['JSX'] }],
         },
         settings: {
             react: { version: 'detect' },

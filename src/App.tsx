@@ -27,7 +27,7 @@ const availableSketches = [
 
 function App() {
     const [CurrentSketch, setCurrentSketch] =
-        useState<SketchType>(DiamondSquareSketch)
+        useState<SketchType>(SquareCloudsSketch)
     const [paramValues, setParamValues] = useState<
         ParameterValues<typeof CurrentSketch.parameters>
     >(getParametersInitialValues(CurrentSketch.parameters))
