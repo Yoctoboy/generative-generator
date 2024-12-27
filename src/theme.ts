@@ -40,6 +40,11 @@ export const theme = createTheme({
                     },
                     '&.Mui-selected': {
                         backgroundColor: 'var(--selected-menuitem-background)',
+                        '&.Mui-focusVisible': {
+                            // for some reason this style is applied by default on first load
+                            backgroundColor:
+                                'var(--selected-menuitem-background)',
+                        },
                     },
                     '&.Mui-selected:hover': {
                         backgroundColor: 'white',
@@ -102,7 +107,7 @@ export const theme = createTheme({
             styleOverrides: {
                 paper: {
                     '& .MuiMenuItem-root.Mui-selected': {
-                        backgroundColor: 'blue',
+                        backgroundColor: 'var(--selected-menuitem-background)',
                     },
                 },
             },

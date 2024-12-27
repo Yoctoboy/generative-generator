@@ -18,6 +18,7 @@ export const SketchSelector = ({
     const handleChange = (event: SelectChangeEvent<string>) => {
         setCurrentSketchName(event.target.value)
     }
+
     return (
         <FormControl>
             <Select
