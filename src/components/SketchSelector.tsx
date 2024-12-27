@@ -5,33 +5,31 @@ import {
     SelectChangeEvent,
 } from '@mui/material'
 import MenuItem from '@mui/material/MenuItem'
-import { SketchType } from '../algorithms/Sketch'
 
 export const SketchSelector = ({
-    allSketches,
-    currentSketch,
-    setCurrentSketch,
+    allSketchesNames,
+    currentSketchName,
+    setCurrentSketchName,
 }: {
-    allSketches: SketchType[]
-    currentSketch: SketchType
-    setCurrentSketch: (value: SketchType) => void
+    allSketchesNames: string[]
+    currentSketchName: string
+    setCurrentSketchName: (value: string) => void
 }): React.JSX.Element => {
-    const handleChange = (event: SelectChangeEvent<SketchType>) => {
-        setCurrentSketch(event.target.value as SketchType)
+    const handleChange = (event: SelectChangeEvent<string>) => {
+        setCurrentSketchName(event.target.value)
     }
     return (
         <FormControl>
             <Select
                 id="project-selector"
-                value={currentSketch}
+                value={currentSketchName}
                 onChange={handleChange}
                 input={<InputBase />}
                 IconComponent={() => <></>}
             >
-                {allSketches.map((sketch) => (
-                    // @ts-expect-error MUI does not let you use any object as value, but it works fine (only type checking is crappy)
-                    <MenuItem key={sketch.sketchName} value={sketch}>
-                        {sketch.sketchName}
+                {allSketchesNames.map((sketchName) => (
+                    <MenuItem key={sketchName} value={sketchName}>
+                        {sketchName}
                     </MenuItem>
                 ))}
             </Select>

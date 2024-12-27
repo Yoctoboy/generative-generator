@@ -61,7 +61,7 @@ export const Sketch = ({
         75,
         window.innerWidth / window.innerHeight,
         1,
-        10000
+        100000
     )
     camera.position.set(MAXX + 300, 200, MAXZ + 300)
     camera.lookAt(MAXX / 2, -4000, MAXZ / 2)

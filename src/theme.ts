@@ -35,8 +35,8 @@ export const theme = createTheme({
                     transition: 'color 0.3s ease, background-color 0.3s ease',
                     color: 'white',
                     '&:hover': {
-                        backgroundColor: 'white',
                         color: 'black',
+                        backgroundColor: 'white',
                     },
                     '&.Mui-selected': {
                         backgroundColor: 'var(--selected-menuitem-background)',
@@ -94,6 +94,15 @@ export const theme = createTheme({
                     },
                     '& .MuiSelect-icon': {
                         color: 'white',
+                    },
+                },
+            },
+        },
+        MuiMenu: {
+            styleOverrides: {
+                paper: {
+                    '& .MuiMenuItem-root.Mui-selected': {
+                        backgroundColor: 'blue',
                     },
                 },
             },

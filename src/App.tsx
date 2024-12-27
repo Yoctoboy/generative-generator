@@ -25,16 +25,27 @@ const availableSketches = [
     SquareCloudsSketch,
 ]
 
+const sketchesNames = availableSketches.map((sketch) => sketch.sketchName)
+
 function App() {
     const [CurrentSketch, setCurrentSketch] =
         useState<SketchType>(SquareCloudsSketch)
+
+    const [currentSketchName, setCurrentSketchName] = useState<string>(
+        CurrentSketch.sketchName
+    )
+    useEffect(() => {
+        const newCurrentSketch = availableSketches.find(
+            (sketch) => sketch.sketchName === currentSketchName
+        )!
+        setCurrentSketch(newCurrentSketch)
+
+        setParamValues(getParametersInitialValues(newCurrentSketch.parameters))
+    }, [currentSketchName])
+
     const [paramValues, setParamValues] = useState<
         ParameterValues<typeof CurrentSketch.parameters>
     >(getParametersInitialValues(CurrentSketch.parameters))
-
-    useEffect(() => {
-        setParamValues(getParametersInitialValues(CurrentSketch.parameters))
-    }, [CurrentSketch])
 
     const setSingleParamValue = (
         paramName: (typeof CurrentSketch.parameters)[number]['name']
@@ -53,9 +64,9 @@ function App() {
                 </SketchContainer>
                 <Sidebar>
                     <SketchSelector
-                        allSketches={availableSketches}
-                        currentSketch={CurrentSketch}
-                        setCurrentSketch={setCurrentSketch}
+                        allSketchesNames={sketchesNames}
+                        currentSketchName={currentSketchName}
+                        setCurrentSketchName={setCurrentSketchName}
                     />
                     <Sidebar.Divider />
                     {CurrentSketch.parameters.map((parameter) => (
