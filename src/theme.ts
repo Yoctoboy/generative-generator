@@ -78,5 +78,25 @@ export const theme = createTheme({
                 },
             },
         },
+        MuiFormControl: {
+            styleOverrides: {
+                root: {
+                    '& .MuiInputBase-root': {
+                        color: 'white',
+                        fontSize: 20,
+                        transition: 'background-color 0.3s',
+                        border: '1px solid var(--disabled-grey)',
+                        borderRadius: '8px',
+                        '&:focus': {
+                            outline: 'none',
+                            backgroundColor: 'white',
+                        },
+                    },
+                    '& .MuiSelect-icon': {
+                        color: 'white',
+                    },
+                },
+            },
+        },
     },
 })

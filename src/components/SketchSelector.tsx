@@ -3,27 +3,9 @@ import {
     InputBase,
     Select,
     SelectChangeEvent,
-    styled,
 } from '@mui/material'
 import MenuItem from '@mui/material/MenuItem'
 import { SketchType } from '../algorithms/Sketch'
-
-const StyledFormControl = styled(FormControl)(() => ({
-    '& .MuiInputBase-root': {
-        color: 'white',
-        fontSize: 20,
-        transition: 'background-color 0.3s',
-        border: '1px solid var(--disabled-grey)',
-        borderRadius: '8px',
-        '&:focus': {
-            outline: 'none',
-            backgroundColor: 'white',
-        },
-    },
-    '& .MuiSelect-icon': {
-        color: 'white',
-    },
-}))
 
 export const SketchSelector = ({
     allSketches,
@@ -38,7 +20,7 @@ export const SketchSelector = ({
         setCurrentSketch(event.target.value as SketchType)
     }
     return (
-        <StyledFormControl>
+        <FormControl>
             <Select
                 id="project-selector"
                 value={currentSketch}
@@ -53,6 +35,6 @@ export const SketchSelector = ({
                     </MenuItem>
                 ))}
             </Select>
-        </StyledFormControl>
+        </FormControl>
     )
 }

@@ -44,7 +44,6 @@ export const Sketch = ({
                 size: 10,
             }
         })
-        console.log(islandsCoords)
         isOk = true
         for (let i = 0; i < islandsCoords.length && isOk; i++) {
             for (let j = i + 1; j < islandsCoords.length && isOk; j++) {
