@@ -1,12 +1,12 @@
-import { CameraControls } from '@react-three/drei'
-import { Canvas } from '@react-three/fiber'
-import { useRef } from 'react'
-import * as THREE from 'three'
-import { randInt } from 'three/src/math/MathUtils.js'
-import { Parameter, ParameterValues } from '../../components/Parameter'
-import { SketchType } from '../Sketch'
-import { Island, IslandProps } from './Island'
-import { MAXX, MAXY, MAXZ, minDistanceBetweenIslands } from './constants'
+import { CameraControls } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
+import { useRef } from 'react';
+import * as THREE from 'three';
+import { randInt } from 'three/src/math/MathUtils.js';
+import { Parameter, ParameterValues } from '../../components/Parameter';
+import { SketchType } from '../Sketch';
+import { Island, IslandProps } from './Island';
+import { MAXX, MAXY, MAXZ, minDistanceBetweenIslands } from './constants';
 
 const parameters: Parameter[] = [
     {
@@ -16,55 +16,55 @@ const parameters: Parameter[] = [
         step: 1,
         initialValue: 10,
     },
-]
+];
 
 export const Sketch = ({
     paramValues,
 }: {
-    paramValues: ParameterValues<typeof parameters>
+    paramValues: ParameterValues<typeof parameters>;
 }) => {
-    const cameraControlRef = useRef<CameraControls | null>(null)
+    const cameraControlRef = useRef<CameraControls | null>(null);
 
     const distance = (a: IslandProps, b: IslandProps) => {
         return Math.sqrt(
             Math.pow(a.centerx - b.centerx, 2) +
-                Math.pow(a.centerz - b.centerz, 2)
-        )
-    }
+                Math.pow(a.centerz - b.centerz, 2),
+        );
+    };
 
-    let isOk = false
-    let islandsCoords
+    let isOk = false;
+    let islandsCoords;
     do {
-        const islandsAmount = paramValues['Island Amount']
+        const islandsAmount = paramValues['Island Amount'];
         islandsCoords = [...Array(islandsAmount)].map(() => {
             return {
                 centerx: randInt(0, MAXX),
                 centerz: randInt(0, MAXZ),
                 posy: randInt(0, MAXY),
                 size: 10,
-            }
-        })
-        isOk = true
+            };
+        });
+        isOk = true;
         for (let i = 0; i < islandsCoords.length && isOk; i++) {
             for (let j = i + 1; j < islandsCoords.length && isOk; j++) {
                 if (
                     distance(islandsCoords[i], islandsCoords[j]) <
                     minDistanceBetweenIslands
                 ) {
-                    isOk = false
+                    isOk = false;
                 }
             }
         }
-    } while (!isOk)
+    } while (!isOk);
 
     const camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
         1,
-        100000
-    )
-    camera.position.set(MAXX + 300, 200, MAXZ + 300)
-    camera.lookAt(MAXX / 2, -4000, MAXZ / 2)
+        100000,
+    );
+    camera.position.set(MAXX + 300, 200, MAXZ + 300);
+    camera.lookAt(MAXX / 2, -4000, MAXZ / 2);
 
     return (
         <Canvas camera={camera}>
@@ -74,12 +74,12 @@ export const Sketch = ({
                 <Island key={index} {...coords} size={10} />
             ))}
         </Canvas>
-    )
-}
+    );
+};
 
 const SquareCloudsSketch: SketchType<typeof parameters> = {
     sketch: Sketch,
     parameters,
     sketchName: 'Square Clouds',
-}
-export default SquareCloudsSketch
+};
+export default SquareCloudsSketch;

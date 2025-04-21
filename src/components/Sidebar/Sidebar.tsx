@@ -1,5 +1,5 @@
-import { DownloadButton } from '../DownloadButton'
-import { Divider } from './Divider'
+import { DownloadButton } from '../DownloadButton';
+import { Divider } from './Divider';
 
 export const Sidebar = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -29,7 +29,7 @@ export const Sidebar = ({ children }: { children: React.ReactNode }) => {
             </div>
             <DownloadButton />
         </div>
-    )
-}
+    );
+};
 
-Sidebar.Divider = Divider
+Sidebar.Divider = Divider;

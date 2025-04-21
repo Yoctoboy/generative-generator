@@ -3,11 +3,19 @@ import { Parameter, ParameterValues } from '../../components/Parameter';
 import { SketchType } from '../Sketch';
 import { preload, setup } from './setup';
 
-const parameters = [] as const satisfies Parameter[];
+const parameters = [
+    {
+        name: 'Speed',
+        minValue: 0.001,
+        maxValue: 0.1,
+        initialValue: 0.01,
+        step: 0.001,
+    },
+] as const satisfies Parameter[];
 
 const Sketch = ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    paramValues: _paramValues,
+    paramValues,
 }: {
     paramValues: ParameterValues<typeof parameters>;
 }) => {
@@ -19,9 +27,9 @@ const Sketch = ({
     return <ReactP5Wrapper sketch={sketch} />;
 };
 
-const SortedFaceSketch: SketchType<typeof parameters> = {
+const GlitchyVHSSketch: SketchType<typeof parameters> = {
     sketch: Sketch,
     parameters,
-    sketchName: 'Sorted face',
+    sketchName: 'GlitchyVHSSketch',
 };
-export default SortedFaceSketch;
+export default GlitchyVHSSketch;

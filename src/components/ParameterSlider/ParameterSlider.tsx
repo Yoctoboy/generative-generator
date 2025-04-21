@@ -1,12 +1,12 @@
-import React from 'react'
-import { Parameter } from '../Parameter'
-import { StyledSlider } from './StyledSlider'
-import { WhiteText } from './WhiteText'
+import React from 'react';
+import { Parameter } from '../Parameter';
+import { StyledSlider } from './StyledSlider';
+import { WhiteText } from './WhiteText';
 
 type ParameterSliderProps = Parameter & {
-    value: number
-    setValue: (value: number) => void
-}
+    value: number;
+    setValue: (value: number) => void;
+};
 
 export const ParameterSlider = ({
     name,
@@ -18,8 +18,8 @@ export const ParameterSlider = ({
     setValue,
 }: ParameterSliderProps): React.JSX.Element => {
     const handleChange = (_event: Event, newValue: number | number[]) => {
-        setValue(newValue as number)
-    }
+        setValue(newValue as number);
+    };
 
     return (
         <div>
@@ -36,5 +36,5 @@ export const ParameterSlider = ({
                 valueLabelDisplay="on"
             />
         </div>
-    )
-}
+    );
+};

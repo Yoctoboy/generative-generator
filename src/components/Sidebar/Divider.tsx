@@ -6,5 +6,5 @@ export const Divider = () => {
                 // margin: '10px 20px',
             }}
         />
-    )
-}
+    );
+};

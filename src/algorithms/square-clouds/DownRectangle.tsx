@@ -1,11 +1,11 @@
-import * as THREE from 'three'
+import * as THREE from 'three';
 
 export type DownRectangleProps = {
-    height: number
-    posx: number
-    posy: number
-    posz: number
-}
+    height: number;
+    posx: number;
+    posy: number;
+    posz: number;
+};
 
 export const DownRectangle = ({
     height,
@@ -27,5 +27,5 @@ export const DownRectangle = ({
                 <lineBasicMaterial attach="material" color={0x000000} />
             </lineSegments>
         </>
-    )
-}
+    );
+};

@@ -3,5 +3,5 @@ export const WhiteText = ({ children }: { children: React.ReactNode }) => {
         <div style={{ color: 'var(--white-title)', fontSize: 18 }}>
             {children}
         </div>
-    )
-}
+    );
+};

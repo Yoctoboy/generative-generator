@@ -3,5 +3,5 @@ export const PageContainer = ({ children }: { children: React.ReactNode }) => {
         <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
             {children}
         </div>
-    )
-}
+    );
+};

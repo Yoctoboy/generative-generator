@@ -1,4 +1,4 @@
-import { Slider, styled } from '@mui/material'
+import { Slider, styled } from '@mui/material';
 
 export const StyledSlider = styled(Slider)(() => ({
     color: '#AAFFAA',
@@ -30,4 +30,4 @@ export const StyledSlider = styled(Slider)(() => ({
         boxShadow: 'inset 0px 0px 4px -2px #000',
         backgroundColor: '#d0d0d0',
     },
-}))
+}));

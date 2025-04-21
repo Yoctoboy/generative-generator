@@ -3,21 +3,21 @@ import {
     InputBase,
     Select,
     SelectChangeEvent,
-} from '@mui/material'
-import MenuItem from '@mui/material/MenuItem'
+} from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
 
 export const SketchSelector = ({
     allSketchesNames,
     currentSketchName,
     setCurrentSketchName,
 }: {
-    allSketchesNames: string[]
-    currentSketchName: string
-    setCurrentSketchName: (value: string) => void
+    allSketchesNames: string[];
+    currentSketchName: string;
+    setCurrentSketchName: (value: string) => void;
 }): React.JSX.Element => {
     const handleChange = (event: SelectChangeEvent<string>) => {
-        setCurrentSketchName(event.target.value)
-    }
+        setCurrentSketchName(event.target.value);
+    };
 
     return (
         <FormControl>
@@ -35,5 +35,5 @@ export const SketchSelector = ({
                 ))}
             </Select>
         </FormControl>
-    )
-}
+    );
+};

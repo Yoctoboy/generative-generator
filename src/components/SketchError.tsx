@@ -19,10 +19,8 @@ export const SketchError = ({ error }: { error: Error }) => {
                 {error.message}
             </p>
             <p style={{ fontWeight: '600', fontSize: '14px' }}>
-                {error.stack?.split('\n').map((s) => (
-                    <p key={s}>{s}</p>
-                ))}
+                {error.stack?.split('\n').map((s) => <p key={s}>{s}</p>)}
             </p>
         </div>
-    )
-}
+    );
+};

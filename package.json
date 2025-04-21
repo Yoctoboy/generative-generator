@@ -1,50 +1,52 @@
 {
-  "name": "app",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "bunx --bun vite --force",
-    "types": "tsc -b",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.2.1",
-    "@mui/material": "^6.2.1",
-    "@p5-wrapper/react": "^4.4.2",
-    "@react-three/fiber": "^8.17.10",
-    "@types/three": "^0.171.0",
-    "install": "^0.13.0",
-    "p5": "^1.11.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-error-boundary": "^5.0.0",
-    "three": "^0.171.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.16.0",
-    "@types/p5": "^1.7.6",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "@types/web": "^0.0.187",
-    "@vitejs/plugin-react-swc": "^3.5.0",
-    "eslint": "^9.16.0",
-    "eslint-import-resolver-typescript-bun": "^0.0.104",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.14",
-    "globals": "^15.13.0",
-    "typescript": "~5.6.2",
-    "typescript-eslint": "^8.18.0",
-    "vite": "^6.0.1"
-  },
-  "patchedDependencies": {
-    "@types/p5@1.7.6": "patches/@types%2Fp5@1.7.6.patch"
-  }
+    "name": "app",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "bunx --bun vite --force",
+        "types": "tsc -b",
+        "build": "tsc -b && vite build",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix",
+        "format:fix": "prettier --write .",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.0",
+        "@mui/icons-material": "^6.2.1",
+        "@mui/material": "^6.2.1",
+        "@p5-wrapper/react": "^4.4.2",
+        "@react-three/fiber": "^8.17.10",
+        "@types/three": "^0.171.0",
+        "install": "^0.13.0",
+        "p5": "^1.11.2",
+        "prettier": "^3.5.3",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-error-boundary": "^5.0.0",
+        "three": "^0.171.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.16.0",
+        "@types/p5": "^1.7.6",
+        "@types/react": "^18.3.12",
+        "@types/react-dom": "^18.3.1",
+        "@types/web": "^0.0.187",
+        "@vitejs/plugin-react-swc": "^3.5.0",
+        "eslint": "^9.16.0",
+        "eslint-import-resolver-typescript-bun": "^0.0.104",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-react": "^7.37.2",
+        "eslint-plugin-react-hooks": "^5.0.0",
+        "eslint-plugin-react-refresh": "^0.4.14",
+        "globals": "^15.13.0",
+        "typescript": "~5.6.2",
+        "typescript-eslint": "^8.18.0",
+        "vite": "^6.0.1"
+    },
+    "patchedDependencies": {
+        "@types/p5@1.7.6": "patches/@types%2Fp5@1.7.6.patch"
+    }
 }

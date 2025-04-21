@@ -1,7 +1,7 @@
 export const SketchContainer = ({
     children,
 }: {
-    children: React.ReactNode
+    children: React.ReactNode;
 }) => {
     return (
         <div
@@ -17,5 +17,5 @@ export const SketchContainer = ({
         >
             {children}
         </div>
-    )
-}
+    );
+};

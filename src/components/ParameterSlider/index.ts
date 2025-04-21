@@ -1,1 +1,1 @@
-export * from './ParameterSlider'
+export * from './ParameterSlider';

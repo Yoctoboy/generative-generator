@@ -1,15 +1,15 @@
 :root {
-  --sidebar-background: #200021;
-  --selected-menuitem-background: #041b04;
-  --error-background: #ffaaaa;
-  --error-text: #ff5555;
-  --disabled-grey: #777777;
-  --background-grey: #222222;
-  --white-title: #ffffff;
+    --sidebar-background: #200021;
+    --selected-menuitem-background: #041b04;
+    --error-background: #ffaaaa;
+    --error-text: #ff5555;
+    --disabled-grey: #777777;
+    --background-grey: #222222;
+    --white-title: #ffffff;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: Montserrat;
+    margin: 0;
+    padding: 0;
+    font-family: Montserrat;
 }
