@@ -3,7 +3,11 @@ import { Canvas } from '@react-three/fiber';
 import { useRef } from 'react';
 import * as THREE from 'three';
 import { randInt } from 'three/src/math/MathUtils.js';
-import { Parameter, ParameterValues } from '../../components/Parameter';
+import {
+    Parameter,
+    ParameterType,
+    ParameterValues,
+} from '../../components/Parameter';
 import { SketchType } from '../Sketch';
 import { Island, IslandProps } from './Island';
 import { MAXX, MAXY, MAXZ, minDistanceBetweenIslands } from './constants';
@@ -15,6 +19,7 @@ const parameters: Parameter[] = [
         maxValue: 30,
         step: 1,
         initialValue: 10,
+        type: ParameterType.SLIDER,
     },
 ];
 

@@ -10,8 +10,10 @@ import SquareCloudsSketch from './algorithms/square-clouds/SquareCloudsSketch';
 import { PageContainer } from './components/PageContainer';
 import {
     getParametersInitialValues,
+    ParameterType,
     ParameterValues,
 } from './components/Parameter';
+import { ParameterCheckbox } from './components/ParameterCheckbox';
 import { ParameterSlider } from './components/ParameterSlider';
 import { Sidebar } from './components/Sidebar';
 import { SketchContainer } from './components/SketchContainer';
@@ -49,10 +51,17 @@ function App() {
         ParameterValues<typeof CurrentSketch.parameters>
     >(getParametersInitialValues(CurrentSketch.parameters));
 
-    const setSingleParamValue = (
+    const setSingleParameterSliderValue = (
         paramName: (typeof CurrentSketch.parameters)[number]['name'],
     ) => {
         return (value: number) =>
+            setParamValues({ ...paramValues, [paramName]: value });
+    };
+
+    const setSingleParameterCheckboxValue = (
+        paramName: (typeof CurrentSketch.parameters)[number]['name'],
+    ) => {
+        return (value: boolean) =>
             setParamValues({ ...paramValues, [paramName]: value });
     };
 
@@ -71,14 +80,31 @@ function App() {
                         setCurrentSketchName={setCurrentSketchName}
                     />
                     <Sidebar.Divider />
-                    {CurrentSketch.parameters.map((parameter) => (
-                        <ParameterSlider
-                            value={paramValues[parameter.name]}
-                            setValue={setSingleParamValue(parameter.name)}
-                            key={parameter.name}
-                            {...parameter}
-                        />
-                    ))}
+                    {CurrentSketch.parameters.map((parameter) => {
+                        if (parameter.type === ParameterType.SLIDER) {
+                            return (
+                                <ParameterSlider
+                                    value={paramValues[parameter.name]}
+                                    setValue={setSingleParameterSliderValue(
+                                        parameter.name,
+                                    )}
+                                    key={parameter.name}
+                                    {...parameter}
+                                />
+                            );
+                        } else if (parameter.type === ParameterType.CHECKBOX) {
+                            return (
+                                <ParameterCheckbox
+                                    checked={paramValues[parameter.name]}
+                                    setValue={setSingleParameterCheckboxValue(
+                                        parameter.name,
+                                    )}
+                                    key={parameter.name}
+                                    {...parameter}
+                                />
+                            );
+                        }
+                    })}
                 </Sidebar>
             </PageContainer>
         </ThemeProvider>

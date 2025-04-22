@@ -1,9 +1,9 @@
 import React from 'react';
-import { Parameter } from '../Parameter';
+import { SliderParameter } from '../Parameter';
+import { WhiteText } from '../WhiteText';
 import { StyledSlider } from './StyledSlider';
-import { WhiteText } from './WhiteText';
 
-type ParameterSliderProps = Parameter & {
+type ParameterSliderProps = SliderParameter & {
     value: number;
     setValue: (value: number) => void;
 };

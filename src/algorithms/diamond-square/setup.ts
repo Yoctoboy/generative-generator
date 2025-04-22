@@ -1,6 +1,7 @@
 import { P5CanvasInstance } from '@p5-wrapper/react';
 import {
     Parameter,
+    ParameterType,
     ParameterValues,
     randomSeedParameter,
 } from '../../components/Parameter';
@@ -13,6 +14,7 @@ export const parameters = [
         maxValue: 360,
         initialValue: 274,
         step: 1,
+        type: ParameterType.SLIDER,
     },
     {
         name: 'Max Saturation',
@@ -20,6 +22,7 @@ export const parameters = [
         maxValue: 100,
         initialValue: 80,
         step: 1,
+        type: ParameterType.SLIDER,
     },
 ] as const satisfies Parameter[];
 

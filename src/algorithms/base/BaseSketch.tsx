@@ -1,5 +1,9 @@
 import { P5CanvasInstance, ReactP5Wrapper } from '@p5-wrapper/react';
-import { Parameter, ParameterValues } from '../../components/Parameter';
+import {
+    Parameter,
+    ParameterType,
+    ParameterValues,
+} from '../../components/Parameter';
 import { SketchType } from '../Sketch';
 
 const parameters = [
@@ -9,6 +13,7 @@ const parameters = [
         maxValue: 0.1,
         initialValue: 0.01,
         step: 0.001,
+        type: ParameterType.SLIDER,
     },
     {
         name: 'Background Hue',
@@ -16,6 +21,7 @@ const parameters = [
         maxValue: 360,
         initialValue: 274,
         step: 1,
+        type: ParameterType.SLIDER,
     },
     {
         name: 'Background Saturation',
@@ -23,6 +29,7 @@ const parameters = [
         maxValue: 100,
         initialValue: 30,
         step: 1,
+        type: ParameterType.SLIDER,
     },
 ] as const satisfies Parameter[];
 
