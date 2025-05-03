@@ -18,7 +18,10 @@ export const ParameterSlider = ({
     setValue,
 }: ParameterSliderProps): React.JSX.Element => {
     const handleChange = (_event: Event, newValue: number | number[]) => {
-        setValue(newValue as number);
+        if (Array.isArray(newValue)) {
+            throw new Error('Cannot set the value of a Slider to an array');
+        }
+        setValue(newValue);
     };
 
     return (

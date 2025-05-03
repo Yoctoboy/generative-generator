@@ -25,8 +25,6 @@ export const tintColor = ({
     const initialGreen = initialColor._getGreen();
     const initialBlue = initialColor._getBlue();
     const initialAlpha = initialColor._getAlpha();
-    const initialSum =
-        (initialRed + initialGreen + initialBlue) * (initialAlpha / 255);
 
     const targetRed = targetColor._getRed();
     const targetGreen = targetColor._getGreen();

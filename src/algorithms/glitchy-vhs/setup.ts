@@ -78,6 +78,7 @@ const getImagePixels = () => {
         imgPixels[i] = [];
         for (let j = 0; j < canvasWidth; j++) {
             imgPixels[i].push(
+                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                 flatPixels.subarray(
                     i * 4 * canvasWidth + 4 * j,
                     i * 4 * canvasWidth + 4 * j + 4,

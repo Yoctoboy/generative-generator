@@ -6,7 +6,9 @@ import { configs as tsEslintConfig } from 'typescript-eslint';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-    { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
+    {
+        files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    },
     {
         languageOptions: {
             globals: globals.browser,
@@ -23,6 +25,10 @@ export default [
             'react/react-in-jsx-scope': 'off',
             'import/order': ['error', { alphabetize: { order: 'asc' } }],
             'react/no-unknown-property': ['off', { ignore: ['JSX'] }],
+            '@typescript-eslint/consistent-type-assertions': [
+                'error',
+                { assertionStyle: 'never' },
+            ],
         },
         settings: {
             react: { version: 'detect' },
@@ -34,7 +40,6 @@ export default [
                     extensions: ['.js', '.jsx', '.ts', '.tsx'],
                 },
                 'typescript-bun': {
-                    // ^^ HERE! ^^
                     project: true,
                     alwaysTryTypes: true,
                 },

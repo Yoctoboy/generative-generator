@@ -41,7 +41,10 @@ function App() {
     useEffect(() => {
         const newCurrentSketch = availableSketches.find(
             (sketch) => sketch.sketchName === currentSketchName,
-        )!;
+        );
+        if (newCurrentSketch === undefined) {
+            throw new Error(`No sketch found with name ${currentSketchName}`);
+        }
         setCurrentSketch(newCurrentSketch);
 
         setParamValues(getParametersInitialValues(newCurrentSketch.parameters));

@@ -12,7 +12,7 @@ import { SketchType } from '../Sketch';
 import { Island, IslandProps } from './Island';
 import { MAXX, MAXY, MAXZ, minDistanceBetweenIslands } from './constants';
 
-const parameters: Parameter[] = [
+const parameters = [
     {
         name: 'Island Amount',
         minValue: 4,
@@ -21,7 +21,7 @@ const parameters: Parameter[] = [
         initialValue: 10,
         type: ParameterType.SLIDER,
     },
-];
+] as const satisfies Parameter[];
 
 export const Sketch = ({
     paramValues,
@@ -39,8 +39,8 @@ export const Sketch = ({
 
     let isOk = false;
     let islandsCoords;
+    const islandsAmount = paramValues['Island Amount'];
     do {
-        const islandsAmount = paramValues['Island Amount'];
         islandsCoords = [...Array(islandsAmount)].map(() => {
             return {
                 centerx: randInt(0, MAXX),
