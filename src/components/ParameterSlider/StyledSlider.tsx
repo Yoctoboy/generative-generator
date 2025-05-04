@@ -7,6 +7,7 @@ export const StyledSlider = styled(Slider)(() => ({
     '& .MuiSlider-thumb': {
         backgroundColor: 'white',
         border: '2px solid currentColor',
+        transition: 'none',
     },
     '& .MuiSlider-valueLabel': {
         top: 45,
@@ -24,6 +25,7 @@ export const StyledSlider = styled(Slider)(() => ({
     '& .MuiSlider-track': {
         border: 'none',
         height: 5,
+        transition: 'none',
     },
     '& .MuiSlider-rail': {
         opacity: 0.5,
