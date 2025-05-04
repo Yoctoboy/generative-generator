@@ -4,6 +4,7 @@ import {
     Parameter,
     ParameterType,
     ParameterValues,
+    randomSeedParameter,
 } from '../../components/Parameter';
 import {
     Pixel,
@@ -36,19 +37,28 @@ const canvasHeight = 1000;
 let img: Image;
 
 export const parameters = [
+    randomSeedParameter,
     {
-        name: 'Smallest glitch height',
+        name: 'Min glitch height',
         minValue: 1,
         maxValue: 50,
-        initialValue: 5,
+        initialValue: 8,
         step: 1,
         type: ParameterType.SLIDER,
     },
     {
-        name: 'Biggest glitch height',
+        name: 'Max glitch height',
         minValue: 1,
         maxValue: 50,
-        initialValue: 12,
+        initialValue: 25,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Max offset size',
+        minValue: 4,
+        maxValue: 50,
+        initialValue: 10,
         step: 1,
         type: ParameterType.SLIDER,
     },
@@ -110,28 +120,34 @@ export const setup = (
         const targetColor = paramValues['Preserve color?']
             ? p5.color(255)
             : p5.color(
-                  randomInterval(50, 255),
-                  randomInterval(50, 255),
-                  randomInterval(50, 255),
+                  p5.random(50, 255),
+                  p5.random(50, 255),
+                  p5.random(50, 255),
                   255,
               );
         let curY = 0;
         let lastY = 0;
+
         while (curY < canvasHeight) {
             lastY =
                 curY +
                 Math.round(
-                    randomInterval(
-                        paramValues['Smallest glitch height'],
-                        paramValues['Biggest glitch height'],
+                    p5.random(
+                        paramValues['Min glitch height'],
+                        paramValues['Max glitch height'],
                     ),
                 );
-            const offset = Math.round(randomInterval(0, 0));
+            const offset = Math.round(
+                p5.random(
+                    -paramValues['Max offset size'],
+                    paramValues['Max offset size'],
+                ),
+            );
 
             // set all pixels with offset
-            for (let x = offset; x < canvasWidth + offset; x++) {
+            for (let x = 0; x < canvasWidth; x++) {
                 for (let y = curY; y < lastY; y++) {
-                    const initialPixelValue = pixelMatrix.get(y, x);
+                    const initialPixelValue = pixelMatrix.get(y, x + offset);
                     const initialColor = p5.color(
                         initialPixelValue[0],
                         initialPixelValue[1],
@@ -143,7 +159,7 @@ export const setup = (
                         initialColor,
                         targetColor,
                     });
-                    p5.set(x - offset, y, newColor);
+                    p5.set(x, y, newColor);
                 }
             }
             curY = lastY;
