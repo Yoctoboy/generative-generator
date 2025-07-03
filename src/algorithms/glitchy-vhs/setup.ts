@@ -11,28 +11,17 @@ import {
     PixelMatrix,
     PixelMatrixObjectType,
 } from '../utils/PixelMatrix';
-import { randomInterval } from '../utils/mathFunctions';
 import { tintColor } from '../utils/tintColor';
 
+// TODO: make a parameter for that or something
 // import backgroundImage from './assets/face_2_687_1031.jpg';
-// const canvasWidth = 687;
-// const canvasHeight = 1031;
-
 // import backgroundImage from './assets/joren-aranas-662-992.jpg';
-// const canvasWidth = 661;
-// const canvasHeight = 991;
-
 // import backgroundImage from './assets/ramiro-pianarosa-662-999.jpg';
-// const canvasWidth = 662;
-// const canvasHeight = 999;
-
 // import backgroundImage from './assets/duncan-lewis-750-1000.jpg';
-// const canvasWidth = 750;
-// const canvasHeight = 1000;
-
 import backgroundImage from './assets/sergio-rola-750-1000.jpg';
-const canvasWidth = 750;
-const canvasHeight = 1000;
+
+let canvasWidth: number;
+let canvasHeight: number;
 
 let img: Image;
 
@@ -49,8 +38,8 @@ export const parameters = [
     {
         name: 'Max glitch height',
         minValue: 1,
-        maxValue: 50,
-        initialValue: 25,
+        maxValue: 800,
+        initialValue: 400,
         step: 1,
         type: ParameterType.SLIDER,
     },
@@ -58,6 +47,14 @@ export const parameters = [
         name: 'Max offset size',
         minValue: 4,
         maxValue: 50,
+        initialValue: 10,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Grain amount',
+        minValue: 0,
+        maxValue: 100,
         initialValue: 10,
         step: 1,
         type: ParameterType.SLIDER,
@@ -99,17 +96,105 @@ const getImagePixels = () => {
     return imgPixels;
 };
 
+const offsetPixels = (
+    p5: P5CanvasInstance,
+    paramValues: ParameterValues<typeof parameters>,
+    pixelMatrix: PixelMatrix,
+) => {
+    const targetColor = paramValues['Preserve color?']
+        ? p5.color(255)
+        : p5.color(
+              p5.random(0, 255),
+              p5.random(0, 255),
+              p5.random(0, 255),
+              255,
+          );
+    let curY = 0;
+    let lastY = 0;
+
+    while (curY < canvasHeight) {
+        lastY =
+            curY +
+            Math.round(
+                p5.random(
+                    paramValues['Min glitch height'],
+                    paramValues['Max glitch height'],
+                ),
+            );
+        const offset = Math.round(
+            p5.random(
+                -paramValues['Max offset size'],
+                paramValues['Max offset size'],
+            ),
+        );
+
+        // set all pixels with offset
+        for (let x = 0; x < canvasWidth; x++) {
+            for (let y = curY; y < lastY; y++) {
+                const initialPixelValue = pixelMatrix.get(y, x + offset);
+                const initialColor = p5.color(
+                    initialPixelValue[0],
+                    initialPixelValue[1],
+                    initialPixelValue[2],
+                    initialPixelValue[3],
+                );
+                const newColor = tintColor({
+                    p5,
+                    initialColor,
+                    targetColor,
+                    amount: 0.2,
+                });
+                p5.set(x, y, newColor);
+            }
+        }
+        curY = lastY;
+    }
+
+    p5.updatePixels();
+};
+
+const addGrain = (
+    p5: P5CanvasInstance,
+    paramValues: ParameterValues<typeof parameters>,
+) => {
+    const currentPixels = p5.get();
+
+    for (let x = 0; x < canvasWidth; x++) {
+        for (let y = 0; y < canvasHeight; y++) {
+            const pix = currentPixels.get(x, y);
+            const initialColor = p5.color(pix[0], pix[1], pix[2], pix[3]);
+            const targetColor = p5.color(
+                p5.random() * 255,
+                p5.random() * 255,
+                p5.random() * 255,
+                p5.random() * 255,
+            );
+            const newColor = tintColor({
+                p5,
+                initialColor,
+                targetColor,
+                amount: paramValues['Grain amount'] / 100,
+            });
+            p5.set(x, y, newColor);
+        }
+    }
+    p5.updatePixels();
+};
+
 export const setup = (
     p5: P5CanvasInstance,
     paramValues: ParameterValues<typeof parameters>,
 ) => {
     return () => {
+        // image is loaded at this point, so we can find out its size
+        canvasHeight = img.height;
+        canvasWidth = img.width;
+
         p5.createCanvas(canvasWidth, canvasHeight);
         p5.noLoop();
         p5.smooth();
         p5.blendMode(p5.ADD);
         p5.colorMode(p5.RGB);
-
         p5.image(img, 0, 0, canvasWidth, canvasHeight);
 
         const imagePixels = getImagePixels();
@@ -117,54 +202,13 @@ export const setup = (
 
         p5.background(0);
 
-        const targetColor = paramValues['Preserve color?']
-            ? p5.color(255)
-            : p5.color(
-                  p5.random(50, 255),
-                  p5.random(50, 255),
-                  p5.random(50, 255),
-                  255,
-              );
-        let curY = 0;
-        let lastY = 0;
+        // Pixel offsets
+        offsetPixels(p5, paramValues, pixelMatrix);
 
-        while (curY < canvasHeight) {
-            lastY =
-                curY +
-                Math.round(
-                    p5.random(
-                        paramValues['Min glitch height'],
-                        paramValues['Max glitch height'],
-                    ),
-                );
-            const offset = Math.round(
-                p5.random(
-                    -paramValues['Max offset size'],
-                    paramValues['Max offset size'],
-                ),
-            );
+        // RGB separation
+        // TODO: RGB separation
 
-            // set all pixels with offset
-            for (let x = 0; x < canvasWidth; x++) {
-                for (let y = curY; y < lastY; y++) {
-                    const initialPixelValue = pixelMatrix.get(y, x + offset);
-                    const initialColor = p5.color(
-                        initialPixelValue[0],
-                        initialPixelValue[1],
-                        initialPixelValue[2],
-                        initialPixelValue[3],
-                    );
-                    const newColor = tintColor({
-                        p5,
-                        initialColor,
-                        targetColor,
-                    });
-                    p5.set(x, y, newColor);
-                }
-            }
-            curY = lastY;
-        }
-
-        p5.updatePixels();
+        // Grain
+        addGrain(p5, paramValues);
     };
 };
