@@ -16,25 +16,38 @@ export const tintColor = ({
     p5,
     initialColor,
     targetColor,
+    amount = 0.3,
 }: {
     p5: p5;
     initialColor: Color;
     targetColor: Color;
+    amount?: number;
 }): Color => {
+    if (amount < 0 || amount > 1) {
+        throw new Error('tinting color amount should be between 0 & 1');
+    }
+    // @ts-expect-error method is actually defined but not visible in type declarations
     const initialRed = initialColor._getRed();
+    // @ts-expect-error method is actually defined but not visible in type declarations
     const initialGreen = initialColor._getGreen();
+    // @ts-expect-error method is actually defined but not visible in type declarations
     const initialBlue = initialColor._getBlue();
+    // @ts-expect-error method is actually defined but not visible in type declarations
     const initialAlpha = initialColor._getAlpha();
 
+    // @ts-expect-error method is actually defined but not visible in type declarations
     const targetRed = targetColor._getRed();
+    // @ts-expect-error method is actually defined but not visible in type declarations
     const targetGreen = targetColor._getGreen();
+    // @ts-expect-error method is actually defined but not visible in type declarations
     const targetBlue = targetColor._getBlue();
+    // @ts-expect-error method is actually defined but not visible in type declarations
     const targetAlpha = targetColor._getAlpha();
 
-    const tintedRed = initialRed * (targetRed / 255);
-    const tintedGreen = initialGreen * (targetGreen / 255);
-    const tintedBlue = initialBlue * (targetBlue / 255);
-    const tintedAlpha = initialAlpha * (targetAlpha / 255);
+    const tintedRed = initialRed + amount * (targetRed - initialRed);
+    const tintedGreen = initialGreen + amount * (targetGreen - initialGreen);
+    const tintedBlue = initialBlue + amount * (targetBlue - initialBlue);
+    const tintedAlpha = initialAlpha + amount * (targetAlpha - initialAlpha);
 
     return p5.color(tintedRed, tintedGreen, tintedBlue, tintedAlpha);
 };
