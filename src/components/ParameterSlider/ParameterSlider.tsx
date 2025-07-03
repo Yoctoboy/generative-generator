@@ -23,10 +23,20 @@ export const ParameterSlider = ({
         }
         setValue(newValue);
     };
+    const changeSeed = () => {
+        setValue(
+            Math.floor(Math.random() * (maxValue + 1 - minValue) + minValue),
+        );
+    };
 
     return (
         <div>
-            <WhiteText>{name}</WhiteText>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <WhiteText>{name}</WhiteText>
+                {name === 'Random Seed' && (
+                    <button onClick={changeSeed}>Change</button>
+                )}
+            </div>
             <StyledSlider
                 aria-label={`${name}-slider`}
                 value={value ?? initialValue}
