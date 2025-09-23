@@ -7,6 +7,7 @@ import DiamondSquareSketch from './algorithms/diamond-square/DiamondSquareSketch
 import GlitchyVHSSketch from './algorithms/glitchy-vhs/GlitchyVHSSketch';
 import SortedFaceSketch from './algorithms/sorted-face/SortedFaceSketch';
 import SquareCloudsSketch from './algorithms/square-clouds/SquareCloudsSketch';
+import WarpedSketch from './algorithms/warped/WarpedSketch';
 import { PageContainer } from './components/PageContainer';
 import {
     getParametersInitialValues,
@@ -27,13 +28,14 @@ const availableSketches = [
     SortedFaceSketch,
     SquareCloudsSketch,
     GlitchyVHSSketch,
+    WarpedSketch,
 ];
 
 const sketchesNames = availableSketches.map((sketch) => sketch.sketchName);
 
 function App() {
     const [CurrentSketch, setCurrentSketch] =
-        useState<SketchType>(GlitchyVHSSketch);
+        useState<SketchType>(WarpedSketch);
 
     const [currentSketchName, setCurrentSketchName] = useState<string>(
         CurrentSketch.sketchName,

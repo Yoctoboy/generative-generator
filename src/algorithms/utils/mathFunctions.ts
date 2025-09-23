@@ -1,3 +1,5 @@
+import { P5CanvasInstance } from '@p5-wrapper/react';
+
 export const randomExponential = (lambda: number) => {
     const randomUniform = Math.random();
     return -Math.log(randomUniform) / lambda;
@@ -69,4 +71,17 @@ export function gaussianFunction(mu: number, sigma: number, x: number) {
         (1 / (sigma * Math.sqrt(2 * Math.PI))) *
         Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2))
     );
+}
+
+export function fbm(p5: P5CanvasInstance, x: number, y: number, H: number) {
+    const octaves = 8;
+    let res = 0;
+
+    for (let i = 0; i < octaves; i++) {
+        const f = Math.pow(2, i);
+        const a = Math.pow(f, -H);
+        res += a * p5.noise(0.01 * f * x, 0.01 * f * y);
+    }
+    if (Math.random() < 0.00001) console.log(res);
+    return res;
 }
