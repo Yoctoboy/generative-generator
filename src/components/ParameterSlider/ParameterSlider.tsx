@@ -1,5 +1,6 @@
 import React from 'react';
 import { SliderParameter } from '../Parameter';
+import { ParameterTooltip } from '../ParameterTooltip/ParameterTooltip';
 import { WhiteText } from '../WhiteText';
 import { StyledSlider } from './StyledSlider';
 
@@ -14,6 +15,7 @@ export const ParameterSlider = ({
     minValue,
     maxValue,
     initialValue,
+    tooltip,
     value,
     setValue,
 }: ParameterSliderProps): React.JSX.Element => {
@@ -32,7 +34,16 @@ export const ParameterSlider = ({
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <WhiteText>{name}</WhiteText>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '0.5rem',
+                        alignItems: 'center',
+                    }}
+                >
+                    <WhiteText>{name}</WhiteText>
+                    {tooltip && <ParameterTooltip text={tooltip} />}
+                </div>
                 {name === 'Random Seed' && (
                     <button onClick={changeSeed}>Change</button>
                 )}

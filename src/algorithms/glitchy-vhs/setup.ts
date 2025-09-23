@@ -18,7 +18,8 @@ import { tintColor } from '../utils/tintColor';
 // import backgroundImage from './assets/joren-aranas-662-992.jpg';
 // import backgroundImage from './assets/ramiro-pianarosa-662-999.jpg';
 // import backgroundImage from './assets/duncan-lewis-750-1000.jpg';
-import backgroundImage from './assets/sergio-rola-750-1000.jpg';
+// import backgroundImage from './assets/sergio-rola-750-1000.jpg';
+import backgroundImage from './assets/maxim-tolchinskiy-smol.jpg';
 
 let canvasWidth: number;
 let canvasHeight: number;
@@ -52,10 +53,35 @@ export const parameters = [
         type: ParameterType.SLIDER,
     },
     {
+        name: 'Secondary offset chance',
+        minValue: 0,
+        maxValue: 100,
+        initialValue: 20,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Secondary offset amount',
+        minValue: 0,
+        maxValue: 100,
+        initialValue: 5,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
         name: 'Grain amount',
         minValue: 0,
         maxValue: 100,
         initialValue: 10,
+        step: 1,
+        type: ParameterType.SLIDER,
+        tooltip: 'Amount of color shifting when graining (100% = random color)',
+    },
+    {
+        name: 'Grain chance',
+        minValue: 0,
+        maxValue: 100,
+        initialValue: 50,
         step: 1,
         type: ParameterType.SLIDER,
     },
@@ -111,6 +137,7 @@ const offsetPixels = (
           );
     let curY = 0;
     let lastY = 0;
+    let secondaryOffsetAmount: number;
 
     while (curY < canvasHeight) {
         lastY =
@@ -127,11 +154,22 @@ const offsetPixels = (
                 paramValues['Max offset size'],
             ),
         );
+        secondaryOffsetAmount =
+            paramValues['Secondary offset amount'] *
+            (1 + (p5.random() * 0.6 - 0.3)); // +/- 30% around specified parameters
 
         // set all pixels with offset
         for (let x = 0; x < canvasWidth; x++) {
             for (let y = curY; y < lastY; y++) {
-                const initialPixelValue = pixelMatrix.get(y, x + offset);
+                const shouldAddSecondaryOffset =
+                    p5.random() * 100 < paramValues['Secondary offset chance'];
+                const initialPixelValue = pixelMatrix.get(
+                    y,
+                    x +
+                        (shouldAddSecondaryOffset
+                            ? offset + secondaryOffsetAmount * p5.random()
+                            : offset),
+                );
                 const initialColor = p5.color(
                     initialPixelValue[0],
                     initialPixelValue[1],
@@ -144,6 +182,8 @@ const offsetPixels = (
                     targetColor,
                     amount: 0.2,
                 });
+                // if (shouldAddSecondaryOffset)
+                //     newColor.setAlpha(newColor._getAlpha() / 2);
                 p5.set(x, y, newColor);
             }
         }
@@ -161,21 +201,23 @@ const addGrain = (
 
     for (let x = 0; x < canvasWidth; x++) {
         for (let y = 0; y < canvasHeight; y++) {
-            const pix = currentPixels.get(x, y);
-            const initialColor = p5.color(pix[0], pix[1], pix[2], pix[3]);
-            const targetColor = p5.color(
-                p5.random() * 255,
-                p5.random() * 255,
-                p5.random() * 255,
-                p5.random() * 255,
-            );
-            const newColor = tintColor({
-                p5,
-                initialColor,
-                targetColor,
-                amount: paramValues['Grain amount'] / 100,
-            });
-            p5.set(x, y, newColor);
+            if (p5.random() * 100 < paramValues['Grain chance']) {
+                const pix = currentPixels.get(x, y);
+                const initialColor = p5.color(pix[0], pix[1], pix[2], pix[3]);
+                const targetColor = p5.color(
+                    p5.random() * 255,
+                    p5.random() * 255,
+                    p5.random() * 255,
+                    p5.random() * 255,
+                );
+                const newColor = tintColor({
+                    p5,
+                    initialColor,
+                    targetColor,
+                    amount: paramValues['Grain amount'] / 100,
+                });
+                p5.set(x, y, newColor);
+            }
         }
     }
     p5.updatePixels();
@@ -210,5 +252,8 @@ export const setup = (
 
         // Grain
         addGrain(p5, paramValues);
+
+        // Blur out a little
+        // p5.filter(p5.BLUR, 1);
     };
 };

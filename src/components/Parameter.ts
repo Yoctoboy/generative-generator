@@ -3,8 +3,12 @@ export enum ParameterType {
     CHECKBOX = 'CHECKBOX',
 }
 
-export type SliderParameter = {
+type BaseParameter = {
     name: string;
+    tooltip?: string;
+};
+
+export type SliderParameter = BaseParameter & {
     minValue: number;
     maxValue: number;
     initialValue: number;
@@ -12,8 +16,7 @@ export type SliderParameter = {
     type: ParameterType.SLIDER;
 };
 
-export type CheckboxParameter = {
-    name: string;
+export type CheckboxParameter = BaseParameter & {
     initialValue: boolean;
     type: ParameterType.CHECKBOX;
 };

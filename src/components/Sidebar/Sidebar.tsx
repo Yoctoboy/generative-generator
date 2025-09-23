@@ -13,6 +13,7 @@ export const Sidebar = ({ children }: { children: React.ReactNode }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-around',
+                overflow: 'auto',
             }}
         >
             <div
@@ -22,7 +23,7 @@ export const Sidebar = ({ children }: { children: React.ReactNode }) => {
                     display: 'flex',
                     flex: 1,
                     flexDirection: 'column',
-                    gap: '2.5rem',
+                    gap: '1.5rem',
                 }}
             >
                 {children}
