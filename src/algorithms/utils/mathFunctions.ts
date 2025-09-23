@@ -1,4 +1,9 @@
 import { P5CanvasInstance } from '@p5-wrapper/react';
+/*
+ * WARNING
+ *
+ * These RNGs are unseeded.
+ */
 
 export const randomExponential = (lambda: number) => {
     const randomUniform = Math.random();
