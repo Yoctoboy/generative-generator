@@ -12,7 +12,7 @@ const Sketch = ({
     const sketch = (p5: P5CanvasInstance) => {
         seedRandomnessModules(p5, paramValues['Random Seed']);
 
-        p5.setup = setup(p5);
+        p5.setup = setup(p5, paramValues);
     };
     return <ReactP5Wrapper sketch={sketch} />;
 };

@@ -78,15 +78,31 @@ export function gaussianFunction(mu: number, sigma: number, x: number) {
     );
 }
 
-export function fbm(p5: P5CanvasInstance, x: number, y: number, H: number) {
-    const octaves = 8;
-    let res = 0;
+export function fbm({
+    p5,
+    x,
+    y,
+    octaves = 6,
+    lacunarity = 2,
+    gain = 0.7,
+}: {
+    p5: P5CanvasInstance;
+    x: number;
+    y: number;
+    octaves?: number;
+    lacunarity?: number;
+    gain?: number;
+}): number {
+    let amp = 0.5; // starting amplitude
+    let freq = 1.0; // starting frequency
+    let sum = 0.0;
+    let norm = 0.0;
 
     for (let i = 0; i < octaves; i++) {
-        const f = Math.pow(2, i);
-        const a = Math.pow(f, -H);
-        res += a * p5.noise(0.01 * f * x, 0.01 * f * y);
+        sum += amp * p5.noise(x * freq, y * freq);
+        norm += amp;
+        freq *= lacunarity;
+        amp *= gain;
     }
-    if (Math.random() < 0.00001) console.log(res);
-    return res;
+    return sum / (norm || 1);
 }

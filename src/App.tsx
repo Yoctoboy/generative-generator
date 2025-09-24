@@ -50,6 +50,8 @@ function App() {
         setCurrentSketch(newCurrentSketch);
 
         setParamValues(getParametersInitialValues(newCurrentSketch.parameters));
+
+        document.title = `${currentSketchName} [Generative Generator]`;
     }, [currentSketchName]);
 
     const [paramValues, setParamValues] = useState<
