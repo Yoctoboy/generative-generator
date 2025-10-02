@@ -22,6 +22,7 @@ import { SketchError } from './components/SketchError';
 import { SketchSelector } from './components/SketchSelector';
 import { theme } from './theme';
 import { ParameterSeed } from './components/ParameterSeed';
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 
 const availableSketches = [
     BaseSketch,
@@ -78,7 +79,18 @@ function App() {
             <PageContainer>
                 <SketchContainer>
                     <ErrorBoundary FallbackComponent={SketchError}>
-                        <CurrentSketch.sketch paramValues={paramValues} />
+                        <TransformWrapper>
+                            <TransformComponent
+                                wrapperStyle={{
+                                    width: '100%',
+                                    height: '100%',
+                                }}
+                            >
+                                <CurrentSketch.sketch
+                                    paramValues={paramValues}
+                                />
+                            </TransformComponent>
+                        </TransformWrapper>
                     </ErrorBoundary>
                 </SketchContainer>
                 <Sidebar>
