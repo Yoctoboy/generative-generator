@@ -23,6 +23,7 @@ import { SketchSelector } from './components/SketchSelector';
 import { theme } from './theme';
 import { ParameterSeed } from './components/ParameterSeed';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import { ParameterChoice } from './components/ParameterChoice';
 
 const availableSketches = [
     BaseSketch,
@@ -60,17 +61,24 @@ function App() {
         ParameterValues<typeof CurrentSketch.parameters>
     >(getParametersInitialValues(CurrentSketch.parameters));
 
-    const setSingleParameterSliderValue = (
+    const setSingleParameterNumericValue = (
         paramName: (typeof CurrentSketch.parameters)[number]['name'],
     ) => {
         return (value: number) =>
             setParamValues({ ...paramValues, [paramName]: value });
     };
 
-    const setSingleParameterCheckboxValue = (
+    const setSingleParameterBooleanValue = (
         paramName: (typeof CurrentSketch.parameters)[number]['name'],
     ) => {
         return (value: boolean) =>
+            setParamValues({ ...paramValues, [paramName]: value });
+    };
+
+    const setSingleParameterStringValue = (
+        paramName: (typeof CurrentSketch.parameters)[number]['name'],
+    ) => {
+        return (value: string) =>
             setParamValues({ ...paramValues, [paramName]: value });
     };
 
@@ -107,7 +115,7 @@ function App() {
                                     value={
                                         paramValues[parameter.name] as number
                                     }
-                                    setValue={setSingleParameterSliderValue(
+                                    setValue={setSingleParameterNumericValue(
                                         parameter.name,
                                     )}
                                     key={parameter.name}
@@ -120,7 +128,7 @@ function App() {
                                     value={
                                         paramValues[parameter.name] as number
                                     }
-                                    setValue={setSingleParameterSliderValue(
+                                    setValue={setSingleParameterNumericValue(
                                         parameter.name,
                                     )}
                                     key={parameter.name}
@@ -133,7 +141,20 @@ function App() {
                                     checked={
                                         paramValues[parameter.name] as boolean
                                     }
-                                    setValue={setSingleParameterCheckboxValue(
+                                    setValue={setSingleParameterBooleanValue(
+                                        parameter.name,
+                                    )}
+                                    key={parameter.name}
+                                    {...parameter}
+                                />
+                            );
+                        } else if (parameter.type === ParameterType.CHOICE) {
+                            return (
+                                <ParameterChoice
+                                    value={
+                                        paramValues[parameter.name] as string
+                                    }
+                                    setValue={setSingleParameterStringValue(
                                         parameter.name,
                                     )}
                                     key={parameter.name}

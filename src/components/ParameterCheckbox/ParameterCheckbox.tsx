@@ -1,7 +1,7 @@
 import React from 'react';
 import { CheckboxParameter } from '../Parameter';
 import { WhiteText } from '../WhiteText';
-import { StyledCheckbox } from './StyledSlider';
+import { StyledCheckbox } from './StyledCheckbox';
 
 type ParameterCheckboxProps = CheckboxParameter & {
     checked: boolean;

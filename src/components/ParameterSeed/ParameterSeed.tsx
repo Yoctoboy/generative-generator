@@ -36,7 +36,8 @@ export const ParameterSeed = ({
         const newSeed = Math.floor(
             Math.random() * (maxValue + 1 - minValue) + minValue,
         );
-        changeSeed(newSeed);
+        setLocalValue(newSeed);
+        setValue(newSeed);
     };
 
     return (
@@ -51,7 +52,9 @@ export const ParameterSeed = ({
                 >
                     <WhiteText>{name}</WhiteText>
                 </div>
-                <button onClick={handleChangeSeedButtonClick}>Change</button>
+                <button type="button" onClick={handleChangeSeedButtonClick}>
+                    Change
+                </button>
             </div>
             <StyledTextField
                 aria-label={`${name}-slider`}

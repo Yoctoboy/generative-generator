@@ -107,6 +107,38 @@ export function fbm({
     return sum / (norm || 1);
 }
 
+/*
+ * Return a normalized (around zero) version of fbm to use as offset in fbm chaining
+ */
+export function fbmOffset({
+    p5,
+    x,
+    y,
+    octaves = 6,
+    lacunarity = 2,
+    gain = 0.7,
+}: {
+    p5: P5CanvasInstance;
+    x: number;
+    y: number;
+    octaves?: number;
+    lacunarity?: number;
+    gain?: number;
+}): number {
+    let amp = 0.5; // starting amplitude
+    let freq = 1.0; // starting frequency
+    let sum = 0.0;
+    let norm = 0.0;
+
+    for (let i = 0; i < octaves; i++) {
+        sum += amp * p5.noise(x * freq, y * freq);
+        norm += amp;
+        freq *= lacunarity;
+        amp *= gain;
+    }
+    return (sum / (norm || 1)) * 2 - 1.0;
+}
+
 export const fbmChain = ({
     p5,
     x,
