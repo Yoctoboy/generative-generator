@@ -1,6 +1,7 @@
 export enum ParameterType {
     SLIDER = 'SLIDER',
     CHECKBOX = 'CHECKBOX',
+    SEED = 'SEED',
 }
 
 type BaseParameter = {
@@ -21,10 +22,19 @@ export type CheckboxParameter = BaseParameter & {
     type: ParameterType.CHECKBOX;
 };
 
-export type Parameter = SliderParameter | CheckboxParameter;
+export type SeedParameter = BaseParameter & {
+    minValue: number;
+    maxValue: number;
+    initialValue: number;
+    type: ParameterType.SEED;
+};
+
+export type Parameter = SliderParameter | CheckboxParameter | SeedParameter;
 
 export type ParameterValues<T extends readonly Parameter[]> = {
-    [K in T[number] as K['name']]: K extends SliderParameter ? number : boolean;
+    [K in T[number] as K['name']]: K extends CheckboxParameter
+        ? boolean
+        : number;
 };
 
 export const getParametersInitialValues = <T extends readonly Parameter[]>(
@@ -39,11 +49,10 @@ export const getParametersInitialValues = <T extends readonly Parameter[]>(
     }, {} as ParameterValues<T>);
 };
 
-export const randomSeedParameter: SliderParameter = {
+export const randomSeedParameter: SeedParameter = {
     name: 'Random Seed',
     minValue: 0,
     maxValue: 1e9,
     initialValue: Math.floor(Math.random() * 1e9),
-    step: 1,
-    type: ParameterType.SLIDER,
+    type: ParameterType.SEED,
 };

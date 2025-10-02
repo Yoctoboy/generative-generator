@@ -106,3 +106,41 @@ export function fbm({
     }
     return sum / (norm || 1);
 }
+
+export const fbmChain = ({
+    p5,
+    x,
+    y,
+    octaves = 6,
+    lacunarity = 2,
+    gain = 0.7,
+    chains = 2,
+}: {
+    p5: P5CanvasInstance;
+    x: number;
+    y: number;
+    octaves?: number;
+    lacunarity?: number;
+    gain?: number;
+    chains?: number;
+}) => {
+    let offset = 0;
+    for (let chain = 0; chain < chains; chain++) {
+        offset = fbm({
+            p5,
+            x: x + offset,
+            y: y + offset,
+            octaves,
+            lacunarity,
+            gain,
+        });
+    }
+    return fbm({
+        p5,
+        x: x + offset,
+        y: y + offset,
+        octaves,
+        lacunarity,
+        gain,
+    });
+};

@@ -21,6 +21,7 @@ import { SketchContainer } from './components/SketchContainer';
 import { SketchError } from './components/SketchError';
 import { SketchSelector } from './components/SketchSelector';
 import { theme } from './theme';
+import { ParameterSeed } from './components/ParameterSeed';
 
 const availableSketches = [
     BaseSketch,
@@ -88,10 +89,25 @@ function App() {
                     />
                     <Sidebar.Divider />
                     {CurrentSketch.parameters.map((parameter) => {
-                        if (parameter.type === ParameterType.SLIDER) {
+                        if (parameter.type === ParameterType.SEED) {
+                            return (
+                                <ParameterSeed
+                                    value={
+                                        paramValues[parameter.name] as number
+                                    }
+                                    setValue={setSingleParameterSliderValue(
+                                        parameter.name,
+                                    )}
+                                    key={parameter.name}
+                                    {...parameter}
+                                />
+                            );
+                        } else if (parameter.type === ParameterType.SLIDER) {
                             return (
                                 <ParameterSlider
-                                    value={paramValues[parameter.name]}
+                                    value={
+                                        paramValues[parameter.name] as number
+                                    }
                                     setValue={setSingleParameterSliderValue(
                                         parameter.name,
                                     )}
@@ -102,7 +118,9 @@ function App() {
                         } else if (parameter.type === ParameterType.CHECKBOX) {
                             return (
                                 <ParameterCheckbox
-                                    checked={paramValues[parameter.name]}
+                                    checked={
+                                        paramValues[parameter.name] as boolean
+                                    }
                                     setValue={setSingleParameterCheckboxValue(
                                         parameter.name,
                                     )}

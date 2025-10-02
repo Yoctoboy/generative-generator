@@ -25,11 +25,6 @@ export const ParameterSlider = ({
         }
         setValue(newValue);
     };
-    const changeSeed = () => {
-        setValue(
-            Math.floor(Math.random() * (maxValue + 1 - minValue) + minValue),
-        );
-    };
 
     return (
         <div>
@@ -44,9 +39,6 @@ export const ParameterSlider = ({
                     <WhiteText>{name}</WhiteText>
                     {tooltip && <ParameterTooltip text={tooltip} />}
                 </div>
-                {name === 'Random Seed' && (
-                    <button onClick={changeSeed}>Change</button>
-                )}
             </div>
             <StyledSlider
                 aria-label={`${name}-slider`}

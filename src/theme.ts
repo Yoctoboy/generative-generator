@@ -66,8 +66,6 @@ export const theme = createTheme({
                         outline: 'none',
                     },
                     '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                        color: 'black',
                         cursor: 'pointer',
                     },
                 },

@@ -6,6 +6,7 @@ export const DownloadButton = () => {
         if (canvas) {
             const link = document.createElement('a');
             link.download = 'myCanvas.png';
+            // @ts-expect-error toDataURL indeed exists
             link.href = canvas.toDataURL('image/png'); // Get the canvas data as a PNG
             link.click();
         } else {
