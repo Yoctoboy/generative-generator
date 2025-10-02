@@ -56,7 +56,6 @@ export const ParameterSeed = ({
             <StyledTextField
                 aria-label={`${name}-slider`}
                 value={localValue ?? initialValue}
-                defaultValue={initialValue}
                 onChange={(e) => changeSeed(parseInt(e.target.value))}
                 name={name}
             />
