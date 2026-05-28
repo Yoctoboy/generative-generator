@@ -24,6 +24,7 @@ import { theme } from './theme';
 import { ParameterSeed } from './components/ParameterSeed';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { ParameterChoice } from './components/ParameterChoice';
+import TendrilsSketch from './algorithms/tendrils/TendrilsSketch';
 
 const availableSketches = [
     BaseSketch,
@@ -32,13 +33,13 @@ const availableSketches = [
     SquareCloudsSketch,
     GlitchyVHSSketch,
     WarpedSketch,
+    TendrilsSketch,
 ];
 
 const sketchesNames = availableSketches.map((sketch) => sketch.sketchName);
 
 function App() {
-    const [CurrentSketch, setCurrentSketch] =
-        useState<SketchType>(WarpedSketch);
+    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(BaseSketch);
 
     const [currentSketchName, setCurrentSketchName] = useState<string>(
         CurrentSketch.sketchName,

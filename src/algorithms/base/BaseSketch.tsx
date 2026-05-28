@@ -65,6 +65,6 @@ const Sketch = ({
 const BaseSketch: SketchType<typeof parameters> = {
     sketch: Sketch,
     parameters,
-    sketchName: 'Base sketch test',
+    sketchName: 'Base',
 };
 export default BaseSketch;
