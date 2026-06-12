@@ -5,7 +5,7 @@ import {
     ParameterValues,
     randomSeedParameter,
 } from '../../components/Parameter';
-import { randomInterval } from '../utils/mathFunctions';
+import { randomAround, randomInterval } from '../utils/mathFunctions';
 
 const canvasWidth = 700;
 const canvasHeight = 700;
@@ -49,13 +49,16 @@ class Branch {
     speedy: number;
     visible: boolean;
     noiseSpeedFactor: number;
+    initialAlpha: number;
     curAlpha: number;
+    branchesAmount: number;
 
     constructor(
         p5: P5CanvasInstance,
         x: number,
         y: number,
         noiseSpeedFactor: number,
+        branchesAmount: number,
     ) {
         this.x = x;
         this.y = y;
@@ -79,7 +82,9 @@ class Branch {
                 this.x * this.noiseSpeedFactor,
             ) - 1;
         this.visible = true;
-        this.curAlpha = 100;
+        this.branchesAmount = branchesAmount;
+        this.initialAlpha = randomInterval(80, 130) * 500 / this.branchesAmount;
+        this.curAlpha = this.initialAlpha;
     }
 
     move() {
@@ -94,8 +99,11 @@ class Branch {
             this.p5.noise(
                 this.y * this.noiseSpeedFactor,
                 this.x * this.noiseSpeedFactor,
-            ) -
-            0.5;
+            ) - 0.7; // strong bias to constraint the lines to go upward
+        const absSpeed = Math.sqrt(this.speedx * this.speedx + this.speedy * this.speedy);
+        const wishedAbsSpeed = randomAround(2, 0.5);
+        this.speedx *= wishedAbsSpeed / absSpeed;
+        this.speedy *= wishedAbsSpeed / absSpeed;
         this.x += this.speedx;
         this.y += this.speedy;
         // if (randomInterval(0, 100) < 1) {
@@ -106,7 +114,7 @@ class Branch {
     draw() {
         // draws a straight, semi-transparent line between former and current position of the branch
         if (this.visible) {
-            this.curAlpha -= 3;
+            this.curAlpha -= this.initialAlpha / 40;
             this.p5.stroke(255, 255, 255, this.curAlpha);
             const dx = this.x - this.prevx;
             const dy = this.y - this.prevy;
@@ -146,7 +154,7 @@ function create_branches(
     for (let i = 0; i < amount; i++) {
         const x = randomInterval(0.4 * canvasWidth, 0.6 * canvasWidth);
         const y = canvasHeight / 2;
-        all_branches.push(new Branch(p5, x, y, noiseSpeedFactor));
+        all_branches.push(new Branch(p5, x, y, noiseSpeedFactor, amount));
     }
     return all_branches;
 }
