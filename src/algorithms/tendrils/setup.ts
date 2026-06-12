@@ -16,7 +16,7 @@ export const parameters = [
         name: 'Amount',
         minValue: 1,
         maxValue: 10000,
-        initialValue: 1500,
+        initialValue: 500,
         step: 1,
         type: ParameterType.SLIDER,
     },
@@ -108,7 +108,17 @@ class Branch {
         if (this.visible) {
             this.curAlpha -= 3;
             this.p5.stroke(255, 255, 255, this.curAlpha);
-            this.p5.line(this.prevx, this.prevy, this.x, this.y);
+            const dx = this.x - this.prevx;
+            const dy = this.y - this.prevy;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            if (len > 0.5) {
+                this.p5.line(
+                    this.prevx,
+                    this.prevy,
+                    this.x - (dx / len) * 0.78,
+                    this.y - (dy / len) * 0.78,
+                );
+            }
         }
     }
 
