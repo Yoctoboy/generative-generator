@@ -16,16 +16,32 @@ export const parameters = [
         name: 'Amount',
         minValue: 1,
         maxValue: 10000,
-        initialValue: 500,
+        initialValue: 1500,
         step: 1,
         type: ParameterType.SLIDER,
     },
     {
         name: 'Noise Speed',
         minValue: 0.001,
-        maxValue: 0.5,
+        maxValue: 0.2,
         initialValue: 0.03,
         step: 0.001,
+        type: ParameterType.SLIDER,
+    }, 
+    {
+        name: 'Color chaos',
+        minValue: 1,
+        maxValue: 40,
+        initialValue: 3,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Tendrils length',
+        minValue: 20,
+        maxValue: 200,
+        initialValue: 100,
+        step: 1,
         type: ParameterType.SLIDER,
     },
     // {
@@ -52,6 +68,7 @@ class Branch {
     initialAlpha: number;
     curAlpha: number;
     branchesAmount: number;
+    length: number;
 
     constructor(
         p5: P5CanvasInstance,
@@ -59,6 +76,8 @@ class Branch {
         y: number,
         noiseSpeedFactor: number,
         branchesAmount: number,
+        colorChaos: number,
+        length: number,
     ) {
         this.x = x;
         this.y = y;
@@ -66,9 +85,9 @@ class Branch {
         this.prevy = y;
         this.p5 = p5;
         this.color = this.p5.color(
-            randomInterval(100, 200),
-            randomInterval(100, 200),
-            randomInterval(100, 200),
+            this.p5.noise(this.x * colorChaos / 500, this.y) * 200,
+            this.p5.noise(this.x * colorChaos / 500 + 1000, this.y) * 200,
+            this.p5.noise(this.x * colorChaos / 500 + 2000, this.y) * 200,
         );
         this.noiseSpeedFactor = noiseSpeedFactor;
         this.speedx =
@@ -80,11 +99,12 @@ class Branch {
             this.p5.noise(
                 this.y * this.noiseSpeedFactor,
                 this.x * this.noiseSpeedFactor,
-            ) - 1;
+            ) - 100;
         this.visible = true;
         this.branchesAmount = branchesAmount;
         this.initialAlpha = randomInterval(80, 130) * 500 / this.branchesAmount;
         this.curAlpha = this.initialAlpha;
+        this.length = length;
     }
 
     move() {
@@ -99,7 +119,7 @@ class Branch {
             this.p5.noise(
                 this.y * this.noiseSpeedFactor,
                 this.x * this.noiseSpeedFactor,
-            ) - 0.7; // strong bias to constraint the lines to go upward
+            ) - 0.6; // strong bias to constraint the lines to go straight-ish
         const absSpeed = Math.sqrt(this.speedx * this.speedx + this.speedy * this.speedy);
         const wishedAbsSpeed = randomAround(2, 0.5);
         this.speedx *= wishedAbsSpeed / absSpeed;
@@ -114,8 +134,9 @@ class Branch {
     draw() {
         // draws a straight, semi-transparent line between former and current position of the branch
         if (this.visible) {
-            this.curAlpha -= this.initialAlpha / 40;
-            this.p5.stroke(255, 255, 255, this.curAlpha);
+            this.curAlpha -= this.initialAlpha / this.length;
+            this.color.setAlpha(this.curAlpha)
+            this.p5.stroke(this.color);
             const dx = this.x - this.prevx;
             const dy = this.y - this.prevy;
             const len = Math.sqrt(dx * dx + dy * dy);
@@ -148,13 +169,15 @@ class Branch {
 function create_branches(
     amount: number,
     noiseSpeedFactor: number,
+    colorChaos: number,
+    length: number,
     p5: P5CanvasInstance,
 ) {
     const all_branches = [];
     for (let i = 0; i < amount; i++) {
         const x = randomInterval(0.4 * canvasWidth, 0.6 * canvasWidth);
         const y = canvasHeight / 2;
-        all_branches.push(new Branch(p5, x, y, noiseSpeedFactor, amount));
+        all_branches.push(new Branch(p5, x, y, noiseSpeedFactor, amount, colorChaos, length));
     }
     return all_branches;
 }
@@ -173,6 +196,8 @@ export const setup = (
         const branches = create_branches(
             paramValues['Amount'],
             paramValues['Noise Speed'],
+            paramValues["Color chaos"],
+            paramValues["Tendrils length"],
             p5,
         );
         for (let i = 0; i < 10000; i++) {
