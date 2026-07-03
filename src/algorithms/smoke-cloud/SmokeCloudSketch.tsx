@@ -102,6 +102,7 @@ const Sketch = ({
                 layerColor1,
                 layerColor2,
             );
+            // renderLayer(noLightingLayer);
 
             const finalResult = multiplyLayers(
                 p5,

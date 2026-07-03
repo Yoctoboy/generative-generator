@@ -31,7 +31,7 @@ export const generateLightLayer = (p5: P5CanvasInstance, size: number) => {
     const start = p5.random(-0.1, 0.6);
     const startProj = minProj + start * (maxProj - minProj);
     const range = maxProj - startProj;
-
+    p5.noiseDetail(2, 0.5);
     const lightLayer = new Array(size);
     for (let x = 0; x < size; x++) {
         lightLayer[x] = new Array(size);
@@ -39,7 +39,7 @@ export const generateLightLayer = (p5: P5CanvasInstance, size: number) => {
             const value = (projection(x, y) - startProj) / range;
             lightLayer[x][y] = Math.min(
                 1,
-                Math.max(0, value) + 0.1 * p5.random(x * 0.001, y * 0.001) - 0.1,
+                Math.max(0, value) + 0.1 * p5.random(x * 0.0001, y * 0.0001) - 0.1,
             );
         }
     }
