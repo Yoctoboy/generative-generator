@@ -12,9 +12,9 @@ export const generateSmoothHillsLayer = (
     seedsAmount: number = 100, // amount chosen points
 ) => {
     const out = Array.from({ length: size }, () => new Array<number>(size));
-    const eps = 1;
+    const eps = 3;
     const seeds = Array.from({ length: seedsAmount }).map(() => ({
-        color: p5.random(0.3, 0.7),
+        color: p5.random(0.2, 0.8),
         x: Math.floor(p5.random(0, size)),
         y: Math.floor(p5.random(0, size)),
     }));
@@ -29,7 +29,7 @@ export const generateSmoothHillsLayer = (
                 const dy = y - s.y;
                 const d = Math.hypot(dx, dy);
                 // if exactly on a seed -> take its color
-                const w = d < eps ? 1 : 1 / Math.pow(d + eps, 1.2);
+                const w = d < eps ? 1 : 1 / Math.pow(d + eps, 1.1);
                 wf += w * s.color;
                 wsum += w;
             }

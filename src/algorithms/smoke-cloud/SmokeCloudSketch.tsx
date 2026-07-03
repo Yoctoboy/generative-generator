@@ -19,14 +19,14 @@ import { combineLayers } from './combineLayers';
 
 const parameters = [
     randomSeedParameter,
-    // {
-    //     name: 'Speed',
-    //     minValue: 0.001,
-    //     maxValue: 0.1,
-    //     initialValue: 0.01,
-    //     step: 0.001,
-    //     type: ParameterType.SLIDER,
-    // },
+    {
+        name: 'Diamond Square Division factor',
+        minValue: 1.1,
+        maxValue: 3,
+        initialValue: 2,
+        step: 0.1,
+        type: ParameterType.SLIDER,
+    },
     // {
     //     name: 'Background Hue',
     //     minValue: 0,
@@ -51,7 +51,7 @@ const Sketch = ({
     paramValues: ParameterValues<typeof parameters>;
 }) => {
     const sketch = (p5: P5CanvasInstance) => {
-        const size = 513; // must be 2^n + 1
+        const size = 1025; // must be 2^n + 1
         seedRandomnessModules(p5, paramValues['Random Seed']);
 
         p5.setup = () => {
@@ -74,23 +74,25 @@ const Sketch = ({
             const diamondSquarelayer1 = generateGreyscaleDiamondSquareLayer(
                 p5,
                 size,
+                paramValues['Diamond Square Division factor'],
             );
             const diamondSquarelayer2 = generateGreyscaleDiamondSquareLayer(
                 p5,
                 size,
+                paramValues['Diamond Square Division factor'],
             );
             const diamondSquareCombinationLayer = generateSmoothHillsLayer(
                 p5,
                 size,
                 10,
-            );         
+            );
             // const diamondSquareCombinationLayer = combineLayers(p5, size, diamondSquareCombinationLayerPart1, diamondSquareCombinationLayerPart2, diamondSquarelayer3)
             // renderLayer(diamondSquareCombinationLayer);
             // return;
-            p5.colorMode("hsb")
+            p5.colorMode('hsb');
             const layerColor1 = p5.color(p5.random(0, 255), 100, 100);
             const layerColor2 = p5.color(p5.random(0, 255), 100, 100);
-            p5.colorMode("rgb");
+            p5.colorMode('rgb');
             const noLightingLayer = combineAndColorLayers(
                 p5,
                 size,
@@ -98,12 +100,16 @@ const Sketch = ({
                 diamondSquarelayer2,
                 diamondSquareCombinationLayer,
                 layerColor1,
-                layerColor2
+                layerColor2,
             );
 
-            const finalResult = multiplyLayers(p5, size, noLightingLayer, lightLayer);
-            renderLayer(finalResult)
-
+            const finalResult = multiplyLayers(
+                p5,
+                size,
+                noLightingLayer,
+                lightLayer,
+            );
+            renderLayer(finalResult);
         };
     };
     return <ReactP5Wrapper sketch={sketch} />;

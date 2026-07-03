@@ -3,9 +3,9 @@ import { P5CanvasInstance } from '@p5-wrapper/react';
 export const generateGreyscaleDiamondSquareLayer = (
     p5: P5CanvasInstance,
     size: number,
+    divisionFactor: number,
 ) => {
     // global params
-    const randomDivision = 2;
     const maxColor = 255;
 
     // initialize 2D altitude matrix
@@ -70,7 +70,7 @@ export const generateGreyscaleDiamondSquareLayer = (
                 mat[x][y] = result;
             }
         }
-        randomFactor /= randomDivision;
+        randomFactor /= divisionFactor;
         space = halfspace;
     }
 
