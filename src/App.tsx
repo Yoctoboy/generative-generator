@@ -90,7 +90,11 @@ function App() {
             <PageContainer>
                 <SketchContainer>
                     <ErrorBoundary FallbackComponent={SketchError}>
-                        <TransformWrapper>
+                        <TransformWrapper
+                            minScale={0.05}
+                            centerOnInit
+                            centerZoomedOut
+                        >
                             <TransformComponent
                                 wrapperStyle={{
                                     width: '100%',
