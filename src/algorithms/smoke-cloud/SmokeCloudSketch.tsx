@@ -1,0 +1,117 @@
+import { P5CanvasInstance, ReactP5Wrapper } from '@p5-wrapper/react';
+import {
+    Parameter,
+    ParameterType,
+    ParameterValues,
+    randomSeedParameter,
+} from '../../components/Parameter';
+import { SketchType } from '../Sketch';
+import { generateGreyscaleDiamondSquareLayer } from './diamondSquareLayer';
+import { seedRandomnessModules } from '../utils/seedRandomnessModules';
+import { generateSmoothHillsLayer } from './smoothHillsLayer';
+import { combineAndColorLayers } from './combineAndColorLayers';
+import { generateLightLayer } from './lightLayer';
+import { multiplyLayers } from './multiplyLayers';
+import { Color } from 'p5';
+import { combineLayers } from './combineLayers';
+
+// GOOD SEEDS: 171667412; 795445253
+
+const parameters = [
+    randomSeedParameter,
+    // {
+    //     name: 'Speed',
+    //     minValue: 0.001,
+    //     maxValue: 0.1,
+    //     initialValue: 0.01,
+    //     step: 0.001,
+    //     type: ParameterType.SLIDER,
+    // },
+    // {
+    //     name: 'Background Hue',
+    //     minValue: 0,
+    //     maxValue: 360,
+    //     initialValue: 274,
+    //     step: 1,
+    //     type: ParameterType.SLIDER,
+    // },
+    // {
+    //     name: 'Background Saturation',
+    //     minValue: 0,
+    //     maxValue: 100,
+    //     initialValue: 30,
+    //     step: 1,
+    //     type: ParameterType.SLIDER,
+    // },
+] as const satisfies Parameter[];
+
+const Sketch = ({
+    paramValues,
+}: {
+    paramValues: ParameterValues<typeof parameters>;
+}) => {
+    const sketch = (p5: P5CanvasInstance) => {
+        const size = 513; // must be 2^n + 1
+        seedRandomnessModules(p5, paramValues['Random Seed']);
+
+        p5.setup = () => {
+            const renderLayer = (layer: number[][] | Color[][]) => {
+                for (var i = 0; i < size; i++) {
+                    for (var j = 0; j < size; j++) {
+                        p5.set(i, j, layer[i][j]);
+                    }
+                }
+                p5.updatePixels();
+            };
+
+            p5.createCanvas(size, size);
+            p5.background(0);
+
+            // light layer first (because of seeding stuff)
+            const lightLayer = generateLightLayer(p5, size);
+
+            // Two diamond square layers
+            const diamondSquarelayer1 = generateGreyscaleDiamondSquareLayer(
+                p5,
+                size,
+            );
+            const diamondSquarelayer2 = generateGreyscaleDiamondSquareLayer(
+                p5,
+                size,
+            );
+            const diamondSquareCombinationLayer = generateSmoothHillsLayer(
+                p5,
+                size,
+                10,
+            );         
+            // const diamondSquareCombinationLayer = combineLayers(p5, size, diamondSquareCombinationLayerPart1, diamondSquareCombinationLayerPart2, diamondSquarelayer3)
+            // renderLayer(diamondSquareCombinationLayer);
+            // return;
+            p5.colorMode("hsb")
+            const layerColor1 = p5.color(p5.random(0, 255), 100, 100);
+            const layerColor2 = p5.color(p5.random(0, 255), 100, 100);
+            p5.colorMode("rgb");
+            const noLightingLayer = combineAndColorLayers(
+                p5,
+                size,
+                diamondSquarelayer1,
+                diamondSquarelayer2,
+                diamondSquareCombinationLayer,
+                layerColor1,
+                layerColor2
+            );
+
+            const finalResult = multiplyLayers(p5, size, noLightingLayer, lightLayer);
+            renderLayer(finalResult)
+
+        };
+    };
+    return <ReactP5Wrapper sketch={sketch} />;
+};
+
+const SmokeCloudSketch: SketchType<typeof parameters> = {
+    sketch: Sketch,
+    parameters,
+    sketchName: 'SmokeCloud',
+};
+export default SmokeCloudSketch;
