@@ -14,7 +14,7 @@ export const SketchContainer = ({
                 color: 'white',
                 backgroundColor: 'var(--background-grey)',
                 overflow: 'auto',
-                padding: '60px',
+                // padding: '60px',
                 boxSizing: 'border-box',
             }}
         >

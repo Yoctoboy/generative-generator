@@ -9,9 +9,9 @@ import { P5CanvasInstance } from '@p5-wrapper/react';
 export const generatePerlinNoiseLayer = (
     p5: P5CanvasInstance,
     size: number,
-    density: number = 0.01,
-    octaves: number = 2,
-    falloff: number = 0.5,
+    density: number = 0.004,
+    octaves: number = 3,
+    falloff: number = 0.4,
 ) => {
     // Fewer octaves / lower falloff => smoother noise with less fine grain.
     p5.noiseDetail(octaves, falloff);
@@ -24,7 +24,18 @@ export const generatePerlinNoiseLayer = (
     for (let x = 0; x < size; x += 1) {
         for (let y = 0; y < size; y += 1) {
             // p5.noise returns a value in [0, 1]
-            perlinLayer[x][y] = p5.noise(x * density, y * density);
+            const warp = 80;
+            const nx = x * density;
+            const ny = y * density;
+
+            const qx = p5.noise(nx + 100, ny + 100) * warp;
+            const qy = p5.noise(nx - 100, ny - 100) * warp;
+
+            const val = p5.noise((x + qx) * density, (y + qy) * density);
+            // const val = p5.noise(x * density, y * density);
+            const gamma = 2;
+            // perlinLayer[x][y] = val * 255;
+            perlinLayer[x][y] = Math.pow(val, gamma) / (Math.pow(val, gamma) + Math.pow(1-val, gamma));
         }
     }
 

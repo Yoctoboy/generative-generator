@@ -14,8 +14,12 @@ import { generateLightLayer } from './lightLayer';
 import { multiplyLayers } from './multiplyLayers';
 import { Color } from 'p5';
 import { combineLayers } from './combineLayers';
+import { generateRiftLayer } from './riftLayer';
+import { combineRiftLayers } from './combineRiftLayers';
+import { generatePerlinNoiseLayer } from './perlinNoiseLayer';
 
-// GOOD SEEDS: 171667412; 795445253
+// GOOD SEEDS: 171667412; 795445253; 609824748
+// WEIRD: 696472637
 
 const parameters = [
     randomSeedParameter,
@@ -68,49 +72,50 @@ const Sketch = ({
             p5.background(0);
 
             // light layer first (because of seeding stuff)
-            const lightLayer = generateLightLayer(p5, size);
+            const lightLayer1 = generateLightLayer(p5, size);
+            const lightLayer2 = generateLightLayer(p5, size);
 
             // Two diamond square layers
-            const diamondSquarelayer1 = generateGreyscaleDiamondSquareLayer(
+            const diamondSquarelayer11 = generateGreyscaleDiamondSquareLayer(
                 p5,
                 size,
                 paramValues['Diamond Square Division factor'],
             );
-            const diamondSquarelayer2 = generateGreyscaleDiamondSquareLayer(
+            const diamondSquarelayer12 = generateGreyscaleDiamondSquareLayer(
                 p5,
                 size,
                 paramValues['Diamond Square Division factor'],
             );
-            const diamondSquareCombinationLayer = generateSmoothHillsLayer(
-                p5,
-                size,
-                10,
-            );
-            // const diamondSquareCombinationLayer = combineLayers(p5, size, diamondSquareCombinationLayerPart1, diamondSquareCombinationLayerPart2, diamondSquarelayer3)
+            // const diamondSquareCombinationLayer = generateSmoothHillsLayer(
+            //     p5,
+            //     size,
+            //     15,
+            // );
+            const lightedLayer1 = multiplyLayers(p5, size, diamondSquarelayer11, lightLayer1);
+            const lightedLayer2 = multiplyLayers(p5, size, diamondSquarelayer12, lightLayer2);
+            const diamondSquareCombinationLayer = generatePerlinNoiseLayer(p5, size)
             // renderLayer(diamondSquareCombinationLayer);
-            // return;
-            p5.colorMode('hsb');
-            const layerColor1 = p5.color(p5.random(0, 255), 100, 100);
-            const layerColor2 = p5.color(p5.random(0, 255), 100, 100);
-            p5.colorMode('rgb');
-            const noLightingLayer = combineAndColorLayers(
-                p5,
-                size,
-                diamondSquarelayer1,
-                diamondSquarelayer2,
-                diamondSquareCombinationLayer,
-                layerColor1,
-                layerColor2,
-            );
-            // renderLayer(noLightingLayer);
 
-            const finalResult = multiplyLayers(
+            p5.colorMode('hsb');
+            const layerColor11 = p5.color(p5.random(0, 255), p5.random(0, 10), 100);
+            const layerColor12 = p5.color(p5.random(0, 255), p5.random(50, 100), 100);
+            p5.colorMode('rgb');
+            const finalLayer1 = combineAndColorLayers(
                 p5,
                 size,
-                noLightingLayer,
-                lightLayer,
+                lightedLayer1,
+                lightedLayer2,
+                diamondSquareCombinationLayer,
+                layerColor11,
+                layerColor12,
             );
-            renderLayer(finalResult);
+            // const finalLayer1 = multiplyLayers(
+            //     p5,
+            //     size,
+            //     noLightingLayer1,
+            //     lightLayer,
+            // );
+            renderLayer(finalLayer1);
         };
     };
     return <ReactP5Wrapper sketch={sketch} />;

@@ -1,5 +1,4 @@
 import { P5CanvasInstance } from '@p5-wrapper/react';
-import { Color } from 'p5';
 
 /**
  * Multiplies a color layer by a grayscale scalar layer: each pixel's color has
@@ -10,12 +9,10 @@ import { Color } from 'p5';
 export const multiplyLayers = (
     p5: P5CanvasInstance,
     size: number,
-    layer: Color[][],
+    layer: number[][],
     multiplicationLayer: number[][],
 ) => {
-    const black = p5.color(0);
-
-    const resultLayer: Color[][] = new Array(size);
+    const resultLayer: number[][] = new Array(size);
     for (let i = 0; i < size; i++) {
         resultLayer[i] = new Array(size);
     }
@@ -23,11 +20,7 @@ export const multiplyLayers = (
     for (let x = 0; x < size; x += 1) {
         for (let y = 0; y < size; y += 1) {
             // Scale the color's brightness by the scalar value.
-            resultLayer[x][y] = p5.lerpColor(
-                black,
-                layer[x][y],
-                multiplicationLayer[x][y],
-            );
+            resultLayer[x][y] = layer[x][y] * multiplicationLayer[x][y];
         }
     }
 

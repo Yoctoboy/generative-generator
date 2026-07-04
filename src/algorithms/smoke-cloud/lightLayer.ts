@@ -28,7 +28,7 @@ export const generateLightLayer = (p5: P5CanvasInstance, size: number) => {
     // Everything above that point stays at 0, and it still reaches 1 at the
     // other end of the image. `start` is the fraction of the projection range at 
     // which the ramp begins (0 = very top, 0.4 = 40% down).
-    const start = p5.random(-0.1, 0.6);
+    const start = p5.random(-0.3, 0.4);
     const startProj = minProj + start * (maxProj - minProj);
     const range = maxProj - startProj;
     p5.noiseDetail(2, 0.5);

@@ -35,7 +35,9 @@ export const generateSmoothHillsLayer = (
             }
 
             if (wsum >= 0) {
-                out[x][y] = wf / wsum;
+                const val = wf / wsum;
+                const gamma = 4;
+                out[x][y] = Math.pow(val, gamma) / (Math.pow(val, gamma) + Math.pow(1-val, gamma));
             }
         }
     }
