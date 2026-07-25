@@ -6,17 +6,17 @@ import {
     randomSeedParameter,
 } from '../../components/Parameter';
 import { SketchType } from '../Sketch';
-import { generateGreyscaleDiamondSquareLayer } from './diamondSquareLayer';
+import { generateGreyscaleDiamondSquareLayer } from '../../methods/layerutils/diamondSquareLayer';
 import { seedRandomnessModules } from '../utils/seedRandomnessModules';
-import { generateSmoothHillsLayer } from './smoothHillsLayer';
-import { combineAndColorLayers } from './combineAndColorLayers';
-import { generateLightLayer } from './lightLayer';
-import { multiplyLayers } from './multiplyLayers';
+import { generateSmoothHillsLayer } from '../../methods/layerutils/smoothHillsLayer';
+import { combineAndColorLayers } from '../../methods/layerutils/combineAndColorLayers';
+import { generateLightLayer } from '../../methods/layerutils/lightLayer';
+import { multiplyLayers } from '../../methods/layerutils/multiplyLayers';
 import { Color } from 'p5';
-import { combineLayers } from './combineLayers';
-import { generateRiftLayer } from './riftLayer';
-import { combineRiftLayers } from './combineRiftLayers';
-import { generatePerlinNoiseLayer } from './perlinNoiseLayer';
+import { combineLayers } from '../../methods/layerutils/combineLayers';
+import { generateRiftLayer } from '../../methods/layerutils/riftLayer';
+import { combineRiftLayers } from '../../methods/layerutils/combineRiftLayers';
+import { generatePerlinNoiseLayer } from '../../methods/layerutils/perlinNoiseLayer';
 
 // GOOD SEEDS: 171667412; 795445253; 609824748
 // WEIRD: 696472637
