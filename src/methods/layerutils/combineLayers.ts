@@ -20,9 +20,7 @@ export const combineLayers = (
     for (let x = 0; x < size; x += 1) {
         for (let y = 0; y < size; y += 1) {
             // Blend the two colored layers weighted by the combination layer.
-            resultLayer[x][y] =
-                combinationLayer[x][y] * layer1[x][y] +
-                (1 - combinationLayer[x][y] * layer2[x][y]);
+            resultLayer[x][y] = combinationLayer[x][y] * layer1[x][y] + (1 - combinationLayer[x][y] * layer2[x][y]);
         }
     }
 

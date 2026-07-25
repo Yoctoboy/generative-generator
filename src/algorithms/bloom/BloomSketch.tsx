@@ -18,6 +18,7 @@ import { generateRiftLayer } from '../../methods/layerutils/riftLayer';
 import { combineRiftLayers } from '../../methods/layerutils/combineRiftLayers';
 import { generatePerlinNoiseLayer } from '../../methods/layerutils/perlinNoiseLayer';
 import { generateBloomLayer } from '../../methods/layerutils/bloomLayer';
+import { applyFuncToLayer } from '../../methods/layerutils/applyFuncToLayer';
 
 // GOOD SEEDS: 171667412; 795445253; 609824748
 // WEIRD: 696472637
@@ -63,7 +64,7 @@ const Sketch = ({
             const renderLayer = (layer: number[][]) => {
                 for (var i = 0; i < size; i++) {
                     for (var j = 0; j < size; j++) {
-                        p5.set(i, j, layer[i][j]*255);
+                        p5.set(i, j, layer[i][j] * 255);
                     }
                 }
                 p5.updatePixels();
@@ -73,7 +74,7 @@ const Sketch = ({
             p5.background(0);
 
             // light layer first (because of seeding stuff)
-            const lightLayer1 = generateBloomLayer(p5, size);
+            const bloomLayer = generateBloomLayer(p5, size);
 
             // Two diamond square layers
             const diamondSquarelayer = generateGreyscaleDiamondSquareLayer(
@@ -81,12 +82,23 @@ const Sketch = ({
                 size,
                 paramValues['Diamond Square Division factor'],
             );
+            const rootedDiamondSquareLayer = applyFuncToLayer(
+                p5,
+                size,
+                diamondSquarelayer,
+                (x: number) => Math.pow(x, 0.3),
+            );
             // const diamondSquareCombinationLayer = generateSmoothHillsLayer(
             //     p5,
             //     size,
             //     15,
             // );
-            const lightedLayer1 = multiplyLayers(p5, size, diamondSquarelayer, lightLayer1);
+            const lightedLayer1 = multiplyLayers(
+                p5,
+                size,
+                rootedDiamondSquareLayer,
+                bloomLayer,
+            );
             // renderLayer(diamondSquareCombinationLayer);
 
             // p5.colorMode('hsb');

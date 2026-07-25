@@ -15,18 +15,13 @@ export const generateLightLayer = (p5: P5CanvasInstance, size: number) => {
     // normalize the gradient into [0, 1].
     const projection = (x: number, y: number) => x * dx + y * dy;
     const max = size - 1;
-    const projections = [
-        projection(0, 0),
-        projection(max, 0),
-        projection(0, max),
-        projection(max, max),
-    ];
+    const projections = [projection(0, 0), projection(max, 0), projection(0, max), projection(max, max)];
     const minProj = Math.min(...projections);
     const maxProj = Math.max(...projections);
 
     // The gradient ramps up from a point somewhere below the top of the canvas.
     // Everything above that point stays at 0, and it still reaches 1 at the
-    // other end of the image. `start` is the fraction of the projection range at 
+    // other end of the image. `start` is the fraction of the projection range at
     // which the ramp begins (0 = very top, 0.4 = 40% down).
     const start = p5.random(-0.3, 0.4);
     const startProj = minProj + start * (maxProj - minProj);
@@ -37,10 +32,7 @@ export const generateLightLayer = (p5: P5CanvasInstance, size: number) => {
         lightLayer[x] = new Array(size);
         for (let y = 0; y < size; y++) {
             const value = (projection(x, y) - startProj) / range;
-            lightLayer[x][y] = Math.min(
-                1,
-                Math.max(0, value) + 0.1 * p5.random(x * 0.0001, y * 0.0001) - 0.1,
-            );
+            lightLayer[x][y] = Math.min(1, Math.max(0, value) + 0.1 * p5.random(x * 0.0001, y * 0.0001) - 0.1);
         }
     }
 

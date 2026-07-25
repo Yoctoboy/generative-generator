@@ -17,6 +17,7 @@ import { combineLayers } from '../../methods/layerutils/combineLayers';
 import { generateRiftLayer } from '../../methods/layerutils/riftLayer';
 import { combineRiftLayers } from '../../methods/layerutils/combineRiftLayers';
 import { generatePerlinNoiseLayer } from '../../methods/layerutils/perlinNoiseLayer';
+import { applyFuncToLayer } from '../../methods/layerutils/applyFuncToLayer';
 
 // GOOD SEEDS: 171667412; 795445253; 609824748
 // WEIRD: 696472637
@@ -76,16 +77,16 @@ const Sketch = ({
             const lightLayer2 = generateLightLayer(p5, size);
 
             // Two diamond square layers
-            const diamondSquarelayer11 = generateGreyscaleDiamondSquareLayer(
+            const diamondSquarelayer11 = applyFuncToLayer(p5, size, generateGreyscaleDiamondSquareLayer(
                 p5,
                 size,
                 paramValues['Diamond Square Division factor'],
-            );
-            const diamondSquarelayer12 = generateGreyscaleDiamondSquareLayer(
+            ), (x: number) => Math.pow(x, 0.3));
+            const diamondSquarelayer12 = applyFuncToLayer(p5, size, generateGreyscaleDiamondSquareLayer(
                 p5,
                 size,
                 paramValues['Diamond Square Division factor'],
-            );
+            ), (x:number) => Math.pow(x, 0.3));
             // const diamondSquareCombinationLayer = generateSmoothHillsLayer(
             //     p5,
             //     size,

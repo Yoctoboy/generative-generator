@@ -35,7 +35,7 @@ export const generatePerlinNoiseLayer = (
             // const val = p5.noise(x * density, y * density);
             const gamma = 2;
             // perlinLayer[x][y] = val * 255;
-            perlinLayer[x][y] = Math.pow(val, gamma) / (Math.pow(val, gamma) + Math.pow(1-val, gamma));
+            perlinLayer[x][y] = Math.pow(val, gamma) / (Math.pow(val, gamma) + Math.pow(1 - val, gamma));
         }
     }
 

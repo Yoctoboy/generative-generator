@@ -1,10 +1,6 @@
 import { P5CanvasInstance } from '@p5-wrapper/react';
 
-export const generateGreyscaleDiamondSquareLayer = (
-    p5: P5CanvasInstance,
-    size: number,
-    divisionFactor: number,
-) => {
+export const generateGreyscaleDiamondSquareLayer = (p5: P5CanvasInstance, size: number, divisionFactor: number) => {
     // global params
     const maxColor = 255;
 
