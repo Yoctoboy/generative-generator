@@ -26,6 +26,7 @@ import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { ParameterChoice } from './components/ParameterChoice';
 import TendrilsSketch from './algorithms/tendrils/TendrilsSketch';
 import SmokeCloudSketch from './algorithms/smoke-cloud/SmokeCloudSketch';
+import BloomSketch from './algorithms/bloom/BloomSketch';
 
 const availableSketches = [
     BaseSketch,
@@ -35,13 +36,14 @@ const availableSketches = [
     GlitchyVHSSketch,
     WarpedSketch,
     TendrilsSketch,
-    SmokeCloudSketch
+    SmokeCloudSketch,
+    BloomSketch,
 ];
 
 const sketchesNames = availableSketches.map((sketch) => sketch.sketchName);
 
 function App() {
-    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(SmokeCloudSketch);
+    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(BloomSketch);
 
     const [currentSketchName, setCurrentSketchName] = useState<string>(
         CurrentSketch.sketchName,
