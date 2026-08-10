@@ -9,11 +9,7 @@ import SortedFaceSketch from './algorithms/sorted-face/SortedFaceSketch';
 import SquareCloudsSketch from './algorithms/square-clouds/SquareCloudsSketch';
 import WarpedSketch from './algorithms/warped/WarpedSketch';
 import { PageContainer } from './components/PageContainer';
-import {
-    getParametersInitialValues,
-    ParameterType,
-    ParameterValues,
-} from './components/Parameter';
+import { getParametersInitialValues, ParameterType, ParameterValues } from './components/Parameter';
 import { ParameterCheckbox } from './components/ParameterCheckbox';
 import { ParameterSlider } from './components/ParameterSlider';
 import { Sidebar } from './components/Sidebar';
@@ -45,13 +41,9 @@ const sketchesNames = availableSketches.map((sketch) => sketch.sketchName);
 function App() {
     const [CurrentSketch, setCurrentSketch] = useState<SketchType>(BloomSketch);
 
-    const [currentSketchName, setCurrentSketchName] = useState<string>(
-        CurrentSketch.sketchName,
-    );
+    const [currentSketchName, setCurrentSketchName] = useState<string>(CurrentSketch.sketchName);
     useEffect(() => {
-        const newCurrentSketch = availableSketches.find(
-            (sketch) => sketch.sketchName === currentSketchName,
-        );
+        const newCurrentSketch = availableSketches.find((sketch) => sketch.sketchName === currentSketchName);
         if (newCurrentSketch === undefined) {
             throw new Error(`No sketch found with name ${currentSketchName}`);
         }
@@ -62,29 +54,20 @@ function App() {
         document.title = `${currentSketchName} [Generative Generator]`;
     }, [currentSketchName]);
 
-    const [paramValues, setParamValues] = useState<
-        ParameterValues<typeof CurrentSketch.parameters>
-    >(getParametersInitialValues(CurrentSketch.parameters));
+    const [paramValues, setParamValues] = useState<ParameterValues<typeof CurrentSketch.parameters>>(
+        getParametersInitialValues(CurrentSketch.parameters),
+    );
 
-    const setSingleParameterNumericValue = (
-        paramName: (typeof CurrentSketch.parameters)[number]['name'],
-    ) => {
-        return (value: number) =>
-            setParamValues({ ...paramValues, [paramName]: value });
+    const setSingleParameterNumericValue = (paramName: (typeof CurrentSketch.parameters)[number]['name']) => {
+        return (value: number) => setParamValues({ ...paramValues, [paramName]: value });
     };
 
-    const setSingleParameterBooleanValue = (
-        paramName: (typeof CurrentSketch.parameters)[number]['name'],
-    ) => {
-        return (value: boolean) =>
-            setParamValues({ ...paramValues, [paramName]: value });
+    const setSingleParameterBooleanValue = (paramName: (typeof CurrentSketch.parameters)[number]['name']) => {
+        return (value: boolean) => setParamValues({ ...paramValues, [paramName]: value });
     };
 
-    const setSingleParameterStringValue = (
-        paramName: (typeof CurrentSketch.parameters)[number]['name'],
-    ) => {
-        return (value: string) =>
-            setParamValues({ ...paramValues, [paramName]: value });
+    const setSingleParameterStringValue = (paramName: (typeof CurrentSketch.parameters)[number]['name']) => {
+        return (value: string) => setParamValues({ ...paramValues, [paramName]: value });
     };
 
     return (
@@ -92,22 +75,22 @@ function App() {
             <PageContainer>
                 <SketchContainer>
                     <ErrorBoundary FallbackComponent={SketchError}>
-                        <TransformWrapper
-                            minScale={0.05}
-                            centerOnInit
-                            centerZoomedOut
-                        >
-                            <TransformComponent
-                                wrapperStyle={{
-                                    width: '100%',
-                                    height: '100%',
-                                }}
-                            >
-                                <CurrentSketch.sketch
-                                    paramValues={paramValues}
-                                />
-                            </TransformComponent>
-                        </TransformWrapper>
+                        {CurrentSketch.type === 'THREE' ? (
+                            <div style={{ width: '100%', height: '100%' }}>
+                                <CurrentSketch.sketch paramValues={paramValues} />
+                            </div>
+                        ) : (
+                            <TransformWrapper minScale={0.05} centerOnInit centerZoomedOut>
+                                <TransformComponent
+                                    wrapperStyle={{
+                                        width: '100%',
+                                        height: '100%',
+                                    }}
+                                >
+                                    <CurrentSketch.sketch paramValues={paramValues} />
+                                </TransformComponent>
+                            </TransformWrapper>
+                        )}
                     </ErrorBoundary>
                 </SketchContainer>
                 <Sidebar>
@@ -121,12 +104,8 @@ function App() {
                         if (parameter.type === ParameterType.SEED) {
                             return (
                                 <ParameterSeed
-                                    value={
-                                        paramValues[parameter.name] as number
-                                    }
-                                    setValue={setSingleParameterNumericValue(
-                                        parameter.name,
-                                    )}
+                                    value={paramValues[parameter.name] as number}
+                                    setValue={setSingleParameterNumericValue(parameter.name)}
                                     key={parameter.name}
                                     {...parameter}
                                 />
@@ -134,12 +113,8 @@ function App() {
                         } else if (parameter.type === ParameterType.SLIDER) {
                             return (
                                 <ParameterSlider
-                                    value={
-                                        paramValues[parameter.name] as number
-                                    }
-                                    setValue={setSingleParameterNumericValue(
-                                        parameter.name,
-                                    )}
+                                    value={paramValues[parameter.name] as number}
+                                    setValue={setSingleParameterNumericValue(parameter.name)}
                                     key={parameter.name}
                                     {...parameter}
                                 />
@@ -147,12 +122,8 @@ function App() {
                         } else if (parameter.type === ParameterType.CHECKBOX) {
                             return (
                                 <ParameterCheckbox
-                                    checked={
-                                        paramValues[parameter.name] as boolean
-                                    }
-                                    setValue={setSingleParameterBooleanValue(
-                                        parameter.name,
-                                    )}
+                                    checked={paramValues[parameter.name] as boolean}
+                                    setValue={setSingleParameterBooleanValue(parameter.name)}
                                     key={parameter.name}
                                     {...parameter}
                                 />
@@ -160,12 +131,8 @@ function App() {
                         } else if (parameter.type === ParameterType.CHOICE) {
                             return (
                                 <ParameterChoice
-                                    value={
-                                        paramValues[parameter.name] as string
-                                    }
-                                    setValue={setSingleParameterStringValue(
-                                        parameter.name,
-                                    )}
+                                    value={paramValues[parameter.name] as string}
+                                    setValue={setSingleParameterStringValue(parameter.name)}
                                     key={parameter.name}
                                     {...parameter}
                                 />

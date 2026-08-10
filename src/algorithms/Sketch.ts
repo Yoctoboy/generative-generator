@@ -8,4 +8,5 @@ export type SketchType<T extends readonly Parameter[] = Parameter[]> = {
     }) => React.JSX.Element;
     parameters: T;
     sketchName: string;
+    type?: "P5"|"THREE";
 };

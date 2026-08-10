@@ -72,13 +72,14 @@ export const Sketch = ({
     camera.lookAt(MAXX / 2, -4000, MAXZ / 2);
 
     return (
-        <Canvas camera={camera}>
+        <div style={{ width: '100%', height: '100%' }}><Canvas camera={camera}>
             <CameraControls ref={cameraControlRef} />
             <ambientLight intensity={Math.PI} />
             {islandsCoords.map((coords, index) => (
                 <Island key={index} {...coords} size={10} />
             ))}
         </Canvas>
+        </div>
     );
 };
 
@@ -86,5 +87,6 @@ const SquareCloudsSketch: SketchType<typeof parameters> = {
     sketch: Sketch,
     parameters,
     sketchName: 'Square Clouds',
+    type:"THREE"
 };
 export default SquareCloudsSketch;
