@@ -16,14 +16,14 @@ export const parameters = [
         name: 'Amount',
         minValue: 1,
         maxValue: 10000,
-        initialValue: 1500,
+        initialValue: 8500,
         step: 1,
         type: ParameterType.SLIDER,
     },
     {
         name: 'Noise Speed',
         minValue: 0.001,
-        maxValue: 0.2,
+        maxValue: 1,
         initialValue: 0.03,
         step: 0.001,
         type: ParameterType.SLIDER,
@@ -38,9 +38,9 @@ export const parameters = [
     },
     {
         name: 'Tendrils length',
-        minValue: 20,
+        minValue: 1,
         maxValue: 200,
-        initialValue: 100,
+        initialValue: 15,
         step: 1,
         type: ParameterType.SLIDER,
     },
@@ -85,9 +85,9 @@ class Branch {
         this.prevy = y;
         this.p5 = p5;
         this.color = this.p5.color(
-            this.p5.noise(this.x * colorChaos / 500, this.y) * 200,
-            this.p5.noise(this.x * colorChaos / 500 + 1000, this.y) * 200,
-            this.p5.noise(this.x * colorChaos / 500 + 2000, this.y) * 200,
+            this.p5.noise(this.x * colorChaos / 2500, this.y) * 255,
+            this.p5.noise(this.x * colorChaos / 2500 + 1000, this.y) * 120,
+            this.p5.noise(this.x * colorChaos / 2500 + 2000, this.y) * 0,
         );
         this.noiseSpeedFactor = noiseSpeedFactor;
         this.speedx =
@@ -99,10 +99,10 @@ class Branch {
             this.p5.noise(
                 this.y * this.noiseSpeedFactor,
                 this.x * this.noiseSpeedFactor,
-            ) - 100;
+            ) - 2;
         this.visible = true;
         this.branchesAmount = branchesAmount;
-        this.initialAlpha = randomInterval(80, 130) * 500 / this.branchesAmount;
+        this.initialAlpha = randomInterval(80, 130) * 2500 / this.branchesAmount;
         this.curAlpha = this.initialAlpha;
         this.length = length;
     }
@@ -119,16 +119,13 @@ class Branch {
             this.p5.noise(
                 this.y * this.noiseSpeedFactor,
                 this.x * this.noiseSpeedFactor,
-            ) - 0.6; // strong bias to constraint the lines to go straight-ish
+            ) - 0.5; // strong bias to constraint the lines to go straight-ish
         const absSpeed = Math.sqrt(this.speedx * this.speedx + this.speedy * this.speedy);
         const wishedAbsSpeed = randomAround(2, 0.5);
         this.speedx *= wishedAbsSpeed / absSpeed;
         this.speedy *= wishedAbsSpeed / absSpeed;
         this.x += this.speedx;
         this.y += this.speedy;
-        // if (randomInterval(0, 100) < 1) {
-        //     console.log(this.speedx, this.speedy);
-        // }
     }
 
     draw() {
@@ -175,7 +172,7 @@ function create_branches(
 ) {
     const all_branches = [];
     for (let i = 0; i < amount; i++) {
-        const x = randomInterval(0.4 * canvasWidth, 0.6 * canvasWidth);
+        const x = randomInterval(0 * canvasWidth, 1 * canvasWidth);
         const y = canvasHeight / 2;
         all_branches.push(new Branch(p5, x, y, noiseSpeedFactor, amount, colorChaos, length));
     }

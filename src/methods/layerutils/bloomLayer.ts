@@ -5,12 +5,12 @@ import { P5CanvasInstance } from '@p5-wrapper/react';
  * Returned values are real numbers between 0 and 1.
  */
 export const generateBloomLayer = (p5: P5CanvasInstance, size: number) => {
-    const centerX = p5.random(size / 3, (2 * size) / 3);
-    const centerY = p5.random(size / 3, (2 * size) / 3);
+    const centerX = p5.random(size / 8, size / 2);
+    const centerY = p5.random(size/10, size / 2);
     const moonSize = p5.random(size / 15, size / 10);
-    const bloomSize = p5.random(size / 6, size / 1.5);
+    const bloomSize = p5.random(size / 4, size / 1.5);
     const lightLayer = new Array(size);
-    const bloomGradientRatio = 1.08; // ratio of 0-to-1 light gradient length from moon to moonSize
+    const bloomGradientRatio = p5.random(1.08, 1.15); // ratio of 0-to-1 light gradient length from moon to moonSize
     for (let x = 0; x < size; x++) {
         lightLayer[x] = new Array(size);
         for (let y = 0; y < size; y++) {

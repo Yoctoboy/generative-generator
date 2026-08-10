@@ -34,7 +34,7 @@ export const setup = (
         p5.colorMode('hsb');
         // global params
         const size = 513; // must be 2**n + 1
-        const randomDivision = 1.3;
+        const randomDivision = 2.5;
         const maxColor = paramValues['Max Saturation'];
 
         p5.createCanvas(size, size);
