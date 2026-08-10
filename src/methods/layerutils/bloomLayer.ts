@@ -6,7 +6,7 @@ import { P5CanvasInstance } from '@p5-wrapper/react';
  */
 export const generateBloomLayer = (p5: P5CanvasInstance, size: number) => {
     const centerX = p5.random(size / 8, size / 2);
-    const centerY = p5.random(size/10, size / 2);
+    const centerY = p5.random(size / 10, size / 2);
     const moonSize = p5.random(size / 15, size / 10);
     const bloomSize = p5.random(size / 4, size / 1.5);
     const lightLayer = new Array(size);
