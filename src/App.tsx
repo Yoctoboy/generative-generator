@@ -23,6 +23,7 @@ import { ParameterChoice } from './components/ParameterChoice';
 import TendrilsSketch from './algorithms/tendrils/TendrilsSketch';
 import SmokeCloudSketch from './algorithms/smoke-cloud/SmokeCloudSketch';
 import BloomSketch from './algorithms/bloom/BloomSketch';
+import HeightMapSketch from './algorithms/height-map/HeightMapSketch';
 
 const availableSketches = [
     BaseSketch,
@@ -34,12 +35,13 @@ const availableSketches = [
     TendrilsSketch,
     SmokeCloudSketch,
     BloomSketch,
+    HeightMapSketch,
 ];
 
 const sketchesNames = availableSketches.map((sketch) => sketch.sketchName);
 
 function App() {
-    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(BloomSketch);
+    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(HeightMapSketch);
 
     const [currentSketchName, setCurrentSketchName] = useState<string>(CurrentSketch.sketchName);
     useEffect(() => {
