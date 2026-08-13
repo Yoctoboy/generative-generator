@@ -24,6 +24,7 @@ import TendrilsSketch from './algorithms/tendrils/TendrilsSketch';
 import SmokeCloudSketch from './algorithms/smoke-cloud/SmokeCloudSketch';
 import BloomSketch from './algorithms/bloom/BloomSketch';
 import HeightMapSketch from './algorithms/height-map/HeightMapSketch';
+import TheRiverSketch from './algorithms/the-river/TheRiverSketch';
 
 const availableSketches = [
     BaseSketch,
@@ -36,12 +37,13 @@ const availableSketches = [
     SmokeCloudSketch,
     BloomSketch,
     HeightMapSketch,
+    TheRiverSketch,
 ];
 
 const sketchesNames = availableSketches.map((sketch) => sketch.sketchName);
 
 function App() {
-    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(HeightMapSketch);
+    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(TheRiverSketch);
 
     const [currentSketchName, setCurrentSketchName] = useState<string>(CurrentSketch.sketchName);
     useEffect(() => {
@@ -102,45 +104,47 @@ function App() {
                         setCurrentSketchName={setCurrentSketchName}
                     />
                     <Sidebar.Divider />
-                    {CurrentSketch.parameters.map((parameter) => {
-                        if (parameter.type === ParameterType.SEED) {
-                            return (
-                                <ParameterSeed
-                                    value={paramValues[parameter.name] as number}
-                                    setValue={setSingleParameterNumericValue(parameter.name)}
-                                    key={parameter.name}
-                                    {...parameter}
-                                />
-                            );
-                        } else if (parameter.type === ParameterType.SLIDER) {
-                            return (
-                                <ParameterSlider
-                                    value={paramValues[parameter.name] as number}
-                                    setValue={setSingleParameterNumericValue(parameter.name)}
-                                    key={parameter.name}
-                                    {...parameter}
-                                />
-                            );
-                        } else if (parameter.type === ParameterType.CHECKBOX) {
-                            return (
-                                <ParameterCheckbox
-                                    checked={paramValues[parameter.name] as boolean}
-                                    setValue={setSingleParameterBooleanValue(parameter.name)}
-                                    key={parameter.name}
-                                    {...parameter}
-                                />
-                            );
-                        } else if (parameter.type === ParameterType.CHOICE) {
-                            return (
-                                <ParameterChoice
-                                    value={paramValues[parameter.name] as string}
-                                    setValue={setSingleParameterStringValue(parameter.name)}
-                                    key={parameter.name}
-                                    {...parameter}
-                                />
-                            );
-                        }
-                    })}
+                    <Sidebar.Parameters>
+                        {CurrentSketch.parameters.map((parameter) => {
+                            if (parameter.type === ParameterType.SEED) {
+                                return (
+                                    <ParameterSeed
+                                        value={paramValues[parameter.name] as number}
+                                        setValue={setSingleParameterNumericValue(parameter.name)}
+                                        key={parameter.name}
+                                        {...parameter}
+                                    />
+                                );
+                            } else if (parameter.type === ParameterType.SLIDER) {
+                                return (
+                                    <ParameterSlider
+                                        value={paramValues[parameter.name] as number}
+                                        setValue={setSingleParameterNumericValue(parameter.name)}
+                                        key={parameter.name}
+                                        {...parameter}
+                                    />
+                                );
+                            } else if (parameter.type === ParameterType.CHECKBOX) {
+                                return (
+                                    <ParameterCheckbox
+                                        checked={paramValues[parameter.name] as boolean}
+                                        setValue={setSingleParameterBooleanValue(parameter.name)}
+                                        key={parameter.name}
+                                        {...parameter}
+                                    />
+                                );
+                            } else if (parameter.type === ParameterType.CHOICE) {
+                                return (
+                                    <ParameterChoice
+                                        value={paramValues[parameter.name] as string}
+                                        setValue={setSingleParameterStringValue(parameter.name)}
+                                        key={parameter.name}
+                                        {...parameter}
+                                    />
+                                );
+                            }
+                        })}
+                    </Sidebar.Parameters>
                 </Sidebar>
             </PageContainer>
         </ThemeProvider>

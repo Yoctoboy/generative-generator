@@ -1,5 +1,6 @@
 import { DownloadButton } from '../DownloadButton';
 import { Divider } from './Divider';
+import { Parameters } from './Parameters';
 
 export const Sidebar = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -13,24 +14,15 @@ export const Sidebar = ({ children }: { children: React.ReactNode }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-around',
-                overflow: 'auto',
+                gap: '1.5rem',
             }}
         >
-            <div
-                style={{
-                    backgroundColor: 'var(--sidebar-background)',
-                    boxSizing: 'border-box',
-                    display: 'flex',
-                    flex: 1,
-                    flexDirection: 'column',
-                    gap: '1.5rem',
-                }}
-            >
-                {children}
-            </div>
+            {children}
             <DownloadButton />
         </div>
     );
 };
 
 Sidebar.Divider = Divider;
+Sidebar.Parameters = Parameters;
+
