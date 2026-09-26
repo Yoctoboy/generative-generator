@@ -25,6 +25,7 @@ import SmokeCloudSketch from './algorithms/smoke-cloud/SmokeCloudSketch';
 import BloomSketch from './algorithms/bloom/BloomSketch';
 import HeightMapSketch from './algorithms/height-map/HeightMapSketch';
 import TheRiverSketch from './algorithms/the-river/TheRiverSketch';
+import TheRoomSketch from './algorithms/the-room/TheRoomSketch';
 
 const availableSketches = [
     BaseSketch,
@@ -38,12 +39,13 @@ const availableSketches = [
     BloomSketch,
     HeightMapSketch,
     TheRiverSketch,
+    TheRoomSketch,
 ];
 
 const sketchesNames = availableSketches.map((sketch) => sketch.sketchName);
 
 function App() {
-    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(TheRiverSketch);
+    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(TheRoomSketch);
 
     const [currentSketchName, setCurrentSketchName] = useState<string>(CurrentSketch.sketchName);
     useEffect(() => {
