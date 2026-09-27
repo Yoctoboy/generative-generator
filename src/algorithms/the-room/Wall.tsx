@@ -5,11 +5,9 @@ interface WallProps {
     totalLength: number;
     totalHeight: number;
     gridUnit: number;
-    // edge thickness in world units (same units as box sizes)
-    edgeWidth?: number;
 }
 
-export const Wall = ({ totalLength, totalHeight, gridUnit, edgeWidth = 1 }: WallProps) => {
+export const Wall = ({ totalLength, totalHeight, gridUnit }: WallProps) => {
     // memoized so random boxes aren't regenerated on every render
     const boxes = useMemo(() => {
         const boxes: WallBoxProps[] = [];
@@ -35,7 +33,7 @@ export const Wall = ({ totalLength, totalHeight, gridUnit, edgeWidth = 1 }: Wall
     return (
         <>
             {boxes.map((b, i) => (
-                <WallBox key={i} {...b} edgeWidth={edgeWidth} />
+                <WallBox key={i} {...b} />
             ))}
         </>
     );

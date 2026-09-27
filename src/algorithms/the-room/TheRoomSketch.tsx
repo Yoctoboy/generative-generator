@@ -52,7 +52,7 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
     const initCameraControls = useCallback(
         (controls: CameraControls | null) => {
             cameraControlRef.current = controls;
-            controls?.setLookAt(roomSize * 0.15, roomSize * 0.15, roomSize * 0.8, roomSize, 0, 0, false);
+            controls?.setLookAt(roomSize * 0.75, roomSize * 0.15, roomSize * 0.65, 0, 0, 0, false);
         },
         [roomSize],
     );
@@ -97,10 +97,7 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
                 {/* horizontally centered in the room, shining down */}
                 {/* the inner glow is a fake for the normal renderer: the path tracer lights the rim
                     for real, and small glowing surfaces are a big source of grain (white specks) */}
-                <NeonPanel
-                    position={[0.4 * roomSize, roomSize * 0.25, 0.4 * roomSize]}
-                    innerGlow={paramValues['Path Tracing'] ? 0 : 0.6}
-                />
+                <NeonPanel position={[0.4 * roomSize, roomSize * 0.25, 0.4 * roomSize]} />
                 {/* right under the light, standing on the floor (whose top is at y = 1) */}
                 <Table position={[0.4 * roomSize, 1, 0.4 * roomSize]} />
 

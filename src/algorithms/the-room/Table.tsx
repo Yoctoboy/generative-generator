@@ -3,7 +3,6 @@ import * as THREE from 'three';
 type TableProps = {
     // center of the table's footprint; y is where its bottom sits (the floor)
     position: [number, number, number];
-    // footprint, same convention as NeonPanel: width along X, height along Z
     width?: number;
     height?: number;
     // vertical size
@@ -16,8 +15,6 @@ type TableProps = {
 };
 
 // For now a plain glossy cuboid standing on the floor.
-// Without the path tracer, the only things it can reflect are lights (as highlights):
-// real reflections of the room come with path tracing
 export const Table = ({
     position: [x, y, z],
     width = 230,
