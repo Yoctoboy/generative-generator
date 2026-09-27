@@ -19,7 +19,7 @@ type PathTracerProps = {
 // Objects with userData.skipPathTracing are left out of the path traced image
 // (the fat edge lines are Meshes under the hood and would be traced as garbage geometry).
 // Must be placed last inside the <Canvas>, so the scene is fully mounted when it's read
-export const PathTracer = ({ enabled = true, bounces = 3, renderScale = 0.5, tiles = 3, sceneKey }: PathTracerProps) => {
+export const PathTracer = ({ enabled = true, bounces = 3, renderScale = 1, tiles = 5, sceneKey }: PathTracerProps) => {
     const gl = useThree((state) => state.gl);
     const scene = useThree((state) => state.scene);
     const camera = useThree((state) => state.camera);

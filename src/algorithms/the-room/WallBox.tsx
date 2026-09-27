@@ -46,7 +46,7 @@ export const WallBox = ({ x, y, z, width, height, depth, color, edgeWidth = 1 }:
                 {/* pushes faces slightly back so edge lines drawn on them don't flicker */}
                 <meshStandardMaterial color={color} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} />
             </mesh>
-            {edgeLines && <primitive object={edgeLines} />}
+            {/* {edgeLines && <primitive object={edgeLines} />} */}
         </group>
     );
 };

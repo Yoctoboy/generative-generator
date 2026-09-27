@@ -17,7 +17,7 @@ export const Wall = ({ totalLength, totalHeight, gridUnit, edgeWidth = 1 }: Wall
             for (let v = 0; v + gridUnit <= totalHeight; v += gridUnit) {
                 const width = gridUnit + Math.random() * gridUnit * 1.5;
                 const height = gridUnit + Math.random() * gridUnit * 1.5;
-                const depth = gridUnit + Math.random() * gridUnit * 2;
+                const depth = gridUnit + Math.random() * gridUnit * 6;
                 boxes.push({
                     x: u - (width - gridUnit) / 2,
                     y: v - (height - gridUnit) / 2,

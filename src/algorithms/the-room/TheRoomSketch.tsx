@@ -7,6 +7,7 @@ import { Parameter, ParameterType, ParameterValues, randomSeedParameter } from '
 import { SketchType } from '../Sketch';
 import { CameraInfo } from './CameraInfo';
 import { NeonPanel } from './NeonPanel';
+import { Table } from './Table';
 import { PathTracer } from './PathTracer';
 import { Wall } from './Wall';
 import { WallBox } from './WallBox';
@@ -51,7 +52,7 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
     const initCameraControls = useCallback(
         (controls: CameraControls | null) => {
             cameraControlRef.current = controls;
-            controls?.setLookAt(roomSize * 0.2, 200, roomSize * 0.8, roomSize, 0, 0, false);
+            controls?.setLookAt(roomSize * 0.15, roomSize * 0.15, roomSize * 0.8, roomSize, 0, 0, false);
         },
         [roomSize],
     );
@@ -75,26 +76,34 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
                 <CameraInfo controlsRef={cameraControlRef} outputRef={cameraInfoRef} />
 
                 {/* origin marker: red = X, green = Y, blue = Z, drawn on top of everything */}
-                <axesHelper args={[200]} renderOrder={1} material-depthTest={false} />
+                {/* <axesHelper args={[200]} renderOrder={1} material-depthTest={false} /> */}
 
                 {/* walls */}
                 <group key={0} position={[0, 0, 0]} rotation={[0, 0, 0]}>
-                    <Wall totalHeight={1000} totalLength={1000} gridUnit={30} />
+                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} />
                 </group>
                 <group key={1} position={[roomSize, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
-                    <Wall totalHeight={1000} totalLength={1000} gridUnit={30} />
+                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} />
+                </group>
+                <group key={2} position={[roomSize, 0, roomSize]} rotation={[0, Math.PI, 0]}>
+                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} />
+                </group>
+                <group key={3} position={[0, 0, roomSize]} rotation={[0, Math.PI / 2, 0]}>
+                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} />
                 </group>
 
                 {/* floor */}
-                <WallBox x={0} y={0} z={0} width={1000} depth={1000} height={1} color={0xbbbbbb} />
+                <WallBox x={0} y={0} z={0} width={roomSize} depth={roomSize} height={1} color={0xbbbbbb} />
                 {/* horizontally centered in the room, shining down */}
-                <NeonPanel position={[roomSize / 2, roomSize / 4, roomSize / 2]} />
+                <NeonPanel position={[0.4 * roomSize, roomSize * 0.25, 0.55 * roomSize]} />
+                {/* right under the light, standing on the floor (whose top is at y = 1) */}
+                <Table position={[0.4 * roomSize, 1, 0.55 * roomSize]} />
 
                 {/* ignored by the path tracer, which only uses real light sources.
                     Kept low so the neon's light is visible */}
                 <ambientLight intensity={0.2} />
 
-                {/* <PathTracer enabled={paramValues['Path Tracing'] as boolean} /> */}
+                <PathTracer enabled={paramValues['Path Tracing'] as boolean} />
             </Canvas>
         </div>
     );
