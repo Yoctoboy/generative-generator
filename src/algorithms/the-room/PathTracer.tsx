@@ -1,6 +1,8 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
+import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { WebGLPathTracer } from 'three-gpu-pathtracer';
 
 type PathTracerProps = {
@@ -17,12 +19,16 @@ type PathTracerProps = {
     // blurs glossy reflections seen after a bounce (0 = off, 1 = max): removes the bright specks
     // made by light going floor -> glossy table -> light, which almost never converge
     filterGlossyFactor?: number;
+    // glow around the overlays (not the path traced image, whose noise would bloom too)
+    bloomStrength?: number;
+    // 0 = tight glow hugging the overlays, 1 = wide soft halo
+    bloomRadius?: number;
 };
 
 // Objects with userData.skipPathTracing are left out of the path traced image
 // (the fat edge lines are Meshes under the hood and would be traced as garbage geometry).
 // Objects with userData.pathTracerOverlay are left out too, and drawn normally (rasterized) on top
-// of the path traced image instead, hidden where the rest of the scene is in front of them.
+// of the path traced image instead, with a bloom glow, hidden where the rest of the scene is in front.
 // Used for light surfaces: the path tracer never shows lights to the camera.
 // Must be placed last inside the <Canvas>, so the scene is fully mounted when it's read
 export const PathTracer = ({
@@ -32,6 +38,9 @@ export const PathTracer = ({
     tiles = 2,
     sceneKey,
     filterGlossyFactor = 0.5,
+    // low values: the glow scales with the overlays' HDR brightness (the neon's emissive is 10×)
+    bloomStrength = 0.2,
+    bloomRadius = 1,
 }: PathTracerProps) => {
     const gl = useThree((state) => state.gl);
     const scene = useThree((state) => state.scene);
@@ -78,45 +87,65 @@ export const PathTracer = ({
     const lastCameraMatrix = useMemo(() => new THREE.Matrix4(), []);
     const lastProjectionMatrix = useMemo(() => new THREE.Matrix4(), []);
 
-    // Priority 1 takes over rendering from react-three-fiber: each frame adds one
-    // sample to the image, which gets less grainy over time. Moving the camera restarts it
-    useFrame(() => {
-        // when off, the path tracer has no copy of the scene: render it normally instead
-        if (!enabled) {
-            gl.render(scene, camera);
-            return;
-        }
-        camera.updateMatrixWorld();
-        if (!lastCameraMatrix.equals(camera.matrixWorld) || !lastProjectionMatrix.equals(camera.projectionMatrix)) {
-            lastCameraMatrix.copy(camera.matrixWorld);
-            lastProjectionMatrix.copy(camera.projectionMatrix);
-            pathTracer.updateCamera();
-        }
-        pathTracer.renderSample();
-        drawOverlays();
-    }, 1);
-
     // writes depth only, no color
     const depthOnlyMaterial = useMemo(() => new THREE.MeshBasicMaterial({ colorWrite: false }), []);
-    useEffect(() => () => depthOnlyMaterial.dispose(), [depthOnlyMaterial]);
+    // the overlays alone, on black, in HDR (half float) so their full brightness drives the bloom
+    const overlayTarget = useMemo(() => new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType }), []);
+    // threshold 0: everything in overlayTarget blooms, since it only holds the overlays
+    const bloomPass = useMemo(() => new UnrealBloomPass(new THREE.Vector2(1, 1), bloomStrength, bloomRadius, 0), []);
+    // adds overlayTarget (overlays + their glow) on top of the canvas
+    const compositeQuad = useMemo(
+        () =>
+            new FullScreenQuad(
+                new THREE.MeshBasicMaterial({
+                    map: overlayTarget.texture,
+                    blending: THREE.AdditiveBlending,
+                    transparent: true,
+                    depthTest: false,
+                    depthWrite: false,
+                    toneMapped: false,
+                }),
+            ),
+        [overlayTarget],
+    );
+    useEffect(
+        () => () => {
+            depthOnlyMaterial.dispose();
+            overlayTarget.dispose();
+            bloomPass.dispose();
+            compositeQuad.material.dispose();
+            compositeQuad.dispose();
+        },
+        [depthOnlyMaterial, overlayTarget, bloomPass, compositeQuad],
+    );
+    useEffect(() => {
+        bloomPass.strength = bloomStrength;
+        bloomPass.radius = bloomRadius;
+    }, [bloomPass, bloomStrength, bloomRadius]);
 
-    const drawOverlays = () => {
-        const overlays: THREE.Object3D[] = [];
-        const skipped: THREE.Object3D[] = [];
-        scene.traverse((object) => {
-            if (!object.visible) return;
-            if (object.userData.pathTracerOverlay) overlays.push(object);
-            else if (object.userData.skipPathTracing) skipped.push(object);
-        });
-        if (overlays.length === 0) return;
+    const drawingBufferSize = useMemo(() => new THREE.Vector2(), []);
+    const clearColor = useMemo(() => new THREE.Color(), []);
+
+    // Draws the overlays with their bloom on top of what's already on the canvas
+    const drawOverlays = (overlays: THREE.Object3D[], skipped: THREE.Object3D[]) => {
+        gl.getDrawingBufferSize(drawingBufferSize);
+        if (overlayTarget.width !== drawingBufferSize.x || overlayTarget.height !== drawingBufferSize.y) {
+            overlayTarget.setSize(drawingBufferSize.x, drawingBufferSize.y);
+            bloomPass.setSize(drawingBufferSize.x, drawingBufferSize.y);
+        }
 
         const autoClear = gl.autoClear;
         const background = scene.background;
+        gl.getClearColor(clearColor);
+        const clearAlpha = gl.getClearAlpha();
         gl.autoClear = false;
         scene.background = null;
-        gl.clearDepth();
 
-        // depth of what the path tracer drew, so the overlays get hidden behind it
+        gl.setRenderTarget(overlayTarget);
+        gl.setClearColor(0x000000, 0);
+        gl.clear();
+
+        // depth of the rest of the scene, so the overlays get hidden behind it
         overlays.forEach((object) => (object.visible = false));
         skipped.forEach((object) => (object.visible = false));
         scene.overrideMaterial = depthOnlyMaterial;
@@ -127,9 +156,46 @@ export const PathTracer = ({
 
         overlays.forEach((object) => gl.render(object, camera));
 
+        // adds the blurred glow into overlayTarget itself
+        bloomPass.render(gl, overlayTarget, overlayTarget, 0, false);
+
+        gl.setRenderTarget(null);
+        compositeQuad.render(gl);
+
+        gl.setClearColor(clearColor, clearAlpha);
         scene.background = background;
         gl.autoClear = autoClear;
     };
+
+    // Priority 1 takes over rendering from react-three-fiber: each frame adds one
+    // sample to the image, which gets less grainy over time. Moving the camera restarts it
+    useFrame(() => {
+        const overlays: THREE.Object3D[] = [];
+        const skipped: THREE.Object3D[] = [];
+        scene.traverse((object) => {
+            if (!object.visible) return;
+            if (object.userData.pathTracerOverlay) overlays.push(object);
+            else if (object.userData.skipPathTracing) skipped.push(object);
+        });
+
+        if (enabled) {
+            camera.updateMatrixWorld();
+            if (!lastCameraMatrix.equals(camera.matrixWorld) || !lastProjectionMatrix.equals(camera.projectionMatrix)) {
+                lastCameraMatrix.copy(camera.matrixWorld);
+                lastProjectionMatrix.copy(camera.projectionMatrix);
+                pathTracer.updateCamera();
+            }
+            pathTracer.renderSample();
+        } else {
+            // the path tracer has no copy of the scene: render it normally instead,
+            // minus the overlays, drawn with their bloom below like when path tracing
+            overlays.forEach((object) => (object.visible = false));
+            gl.render(scene, camera);
+            overlays.forEach((object) => (object.visible = true));
+        }
+
+        if (overlays.length > 0) drawOverlays(overlays, skipped);
+    }, 1);
 
     return null;
 };
