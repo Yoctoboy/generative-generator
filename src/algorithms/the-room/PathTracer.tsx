@@ -27,9 +27,9 @@ type PathTracerProps = {
 // Must be placed last inside the <Canvas>, so the scene is fully mounted when it's read
 export const PathTracer = ({
     enabled = true,
-    bounces = 5,
+    bounces = 4,
     renderScale = 1,
-    tiles = 5,
+    tiles = 2,
     sceneKey,
     filterGlossyFactor = 0.5,
 }: PathTracerProps) => {

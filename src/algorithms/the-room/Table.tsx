@@ -17,8 +17,8 @@ type TableProps = {
 // For now a plain glossy cuboid standing on the floor.
 export const Table = ({
     position: [x, y, z],
-    width = 230,
-    height = 140,
+    width = 250,
+    height = 160,
     tableHeight = 80,
     color = '#000000',
     roughness = 0.05,

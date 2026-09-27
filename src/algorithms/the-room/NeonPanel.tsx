@@ -24,8 +24,8 @@ type NeonPanelProps = {
 // Horizontal, shining downwards only.
 export const NeonPanel = ({
     position,
-    width = 230,
-    height = 140,
+    width = 250,
+    height = 160,
     color = 'white',
     intensity = 10,
     housingHeight = 1000,
