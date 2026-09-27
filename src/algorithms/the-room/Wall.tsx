@@ -1,8 +1,4 @@
 import { useMemo } from 'react';
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
-import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
-import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
-import { unionEdges } from './unionEdges';
 import { WallBox, WallBoxProps } from './WallBox';
 
 interface WallProps {
@@ -13,13 +9,8 @@ interface WallProps {
     edgeWidth?: number;
 }
 
-export const Wall = ({
-    totalLength,
-    totalHeight,
-    gridUnit,
-    edgeWidth = 1,
-}: WallProps) => {
-    // memoized so random boxes (and the costly CSG below) aren't recomputed on every render
+export const Wall = ({ totalLength, totalHeight, gridUnit, edgeWidth = 1 }: WallProps) => {
+    // memoized so random boxes aren't regenerated on every render
     const boxes = useMemo(() => {
         const boxes: WallBoxProps[] = [];
         for (let u = 0; u + gridUnit <= totalLength; u += gridUnit) {
@@ -34,35 +25,18 @@ export const Wall = ({
                     height,
                     width,
                     depth,
-                    color: 0xffffff,
+                    color: 0xbbbbbb,
                 });
             }
         }
         return boxes;
     }, [totalLength, totalHeight, gridUnit]);
 
-    // Plain WebGL lines are always 1px wide whatever the distance, so edges are
-    // drawn as "fat lines" whose width is in world units and shrinks with distance
-    const edgeLines = useMemo(() => {
-        const geometry = new LineSegmentsGeometry().setPositions(
-            unionEdges(boxes).getAttribute('position').array as Float32Array,
-        );
-        const material = new LineMaterial({
-            color: 0x000000,
-            linewidth: edgeWidth,
-            worldUnits: true,
-            // smooths line edges using the canvas's MSAA samples, nearly free
-            alphaToCoverage: true,
-        });
-        return new LineSegments2(geometry, material);
-    }, [boxes, edgeWidth]);
-
     return (
         <>
             {boxes.map((b, i) => (
-                <WallBox key={i} {...b} edges={false} />
+                <WallBox key={i} {...b} edgeWidth={edgeWidth} />
             ))}
-            <primitive object={edgeLines} />
         </>
     );
 };
