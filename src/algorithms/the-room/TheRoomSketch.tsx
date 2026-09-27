@@ -30,7 +30,7 @@ const parameters = [
         minValue: 0,
         maxValue: 4000,
         step: 100,
-        initialValue: 800,
+        initialValue: 200,
         type: ParameterType.SLIDER,
     },
     // {
@@ -107,6 +107,7 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
                 <NeonPanel
                     position={[0.4 * roomSize, roomSize * 0.23, 0.4 * roomSize]}
                     dustCount={paramValues['Dust Amount'] as number}
+                    dustSeed={paramValues['Random Seed'] as number}
                 />
                 {/* right under the light, standing on the floor (whose top is at y = 1) */}
                 <Table position={[0.4 * roomSize, 1, 0.4 * roomSize]} />

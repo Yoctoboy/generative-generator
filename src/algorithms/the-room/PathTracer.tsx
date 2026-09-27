@@ -39,7 +39,7 @@ export const PathTracer = ({
     sceneKey,
     filterGlossyFactor = 0.5,
     // low values: the glow scales with the overlays' HDR brightness (the neon's emissive is 10×)
-    bloomStrength = 0.2,
+    bloomStrength = 0.15,
     bloomRadius = 1,
 }: PathTracerProps) => {
     const gl = useThree((state) => state.gl);

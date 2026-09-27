@@ -20,6 +20,8 @@ type NeonPanelProps = {
     lightHeightToBottom?: number;
     // dust motes hanging in the light under the panel (0 = none)
     dustCount?: number;
+    // same seed = same dust
+    dustSeed: number;
 };
 
 // A glowing rectangle: a visible panel for the looks, plus a RectAreaLight (the only
@@ -35,6 +37,7 @@ export const NeonPanel = ({
     housingThickness = 24,
     lightHeightToBottom = 1,
     dustCount = 800,
+    dustSeed,
 }: NeonPanelProps) => {
     // Black open-bottomed box around the light: a top slab and four side slabs
     // enclosing the panel's footprint (width along X, height along Z), from the
@@ -96,7 +99,13 @@ export const NeonPanel = ({
 
             {dustCount > 0 && (
                 <group position={[0, lightHeightToBottom, 0]}>
-                    <NeonDust panelWidth={width} panelHeight={height} color={color} count={dustCount} />
+                    <NeonDust
+                        panelWidth={width}
+                        panelHeight={height}
+                        seed={dustSeed}
+                        color={color}
+                        count={dustCount}
+                    />
                 </group>
             )}
         </group>
