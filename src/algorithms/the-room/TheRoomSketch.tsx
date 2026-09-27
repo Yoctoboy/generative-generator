@@ -59,7 +59,7 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
 
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-            <div
+            {/* <div
                 ref={cameraInfoRef}
                 style={{
                     position: 'absolute',
@@ -69,11 +69,11 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
                     color: 'white',
                     whiteSpace: 'pre',
                 }}
-            />
+            /> */}
             <Canvas camera={camera}>
                 <color attach="background" args={['black']} />
                 <CameraControls ref={initCameraControls} />
-                <CameraInfo controlsRef={cameraControlRef} outputRef={cameraInfoRef} />
+                {/* <CameraInfo controlsRef={cameraControlRef} outputRef={cameraInfoRef} /> */}
 
                 {/* origin marker: red = X, green = Y, blue = Z, drawn on top of everything */}
                 {/* <axesHelper args={[200]} renderOrder={1} material-depthTest={false} /> */}
@@ -95,9 +95,14 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
                 {/* floor */}
                 <WallBox x={0} y={0} z={0} width={roomSize} depth={roomSize} height={1} color={0xbbbbbb} />
                 {/* horizontally centered in the room, shining down */}
-                <NeonPanel position={[0.4 * roomSize, roomSize * 0.25, 0.55 * roomSize]} />
+                {/* the inner glow is a fake for the normal renderer: the path tracer lights the rim
+                    for real, and small glowing surfaces are a big source of grain (white specks) */}
+                <NeonPanel
+                    position={[0.4 * roomSize, roomSize * 0.25, 0.4 * roomSize]}
+                    innerGlow={paramValues['Path Tracing'] ? 0 : 0.6}
+                />
                 {/* right under the light, standing on the floor (whose top is at y = 1) */}
-                <Table position={[0.4 * roomSize, 1, 0.55 * roomSize]} />
+                <Table position={[0.4 * roomSize, 1, 0.4 * roomSize]} />
 
                 {/* ignored by the path tracer, which only uses real light sources.
                     Kept low so the neon's light is visible */}

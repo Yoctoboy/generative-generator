@@ -27,7 +27,7 @@ type NeonPanelProps = {
 // No shadows with the normal renderer: those come with the path tracer.
 export const NeonPanel = ({
     position,
-    width = 200,
+    width = 230,
     height = 140,
     color = 'white',
     intensity = 10,
@@ -41,21 +41,41 @@ export const NeonPanel = ({
     // open bottom (y = 0) up to housingHeight. The light sits lightHeightToBottom above y = 0
     const t = housingThickness;
     const h = housingHeight;
-    // innerFace: index of the box face pointing inside the housing, in BoxGeometry's
-    // face order: 0 = +X, 1 = -X, 2 = +Y, 3 = -Y, 4 = +Z, 5 = -Z
-    const housingSlabs: { size: [number, number, number]; position: [number, number, number]; innerFace: number }[] = [
+    type Vec3 = [number, number, number];
+    const housingSlabs: { size: Vec3; position: Vec3 }[] = [
         // top
-        { size: [width + 2 * t, t, height + 2 * t], position: [0, h + t / 2, 0], innerFace: 3 },
+        { size: [width + 2 * t, t, height + 2 * t], position: [0, h + t / 2, 0] },
         // sides along Z (full length, they cover the corners)
-        { size: [t, h, height + 2 * t], position: [(width + t) / 2, h / 2, 0], innerFace: 1 },
-        { size: [t, h, height + 2 * t], position: [-(width + t) / 2, h / 2, 0], innerFace: 0 },
+        { size: [t, h, height + 2 * t], position: [(width + t) / 2, h / 2, 0] },
+        { size: [t, h, height + 2 * t], position: [-(width + t) / 2, h / 2, 0] },
         // sides along X (fit between the two above)
-        { size: [width, h, t], position: [0, h / 2, (height + t) / 2], innerFace: 5 },
-        { size: [width, h, t], position: [0, h / 2, -(height + t) / 2], innerFace: 4 },
+        { size: [width, h, t], position: [0, h / 2, (height + t) / 2] },
+        { size: [width, h, t], position: [0, h / 2, -(height + t) / 2] },
     ];
 
-    // shared by all slabs: one material per face, black outside and white inside
-    const outerMaterial = useMemo(() => new THREE.MeshStandardMaterial({ color: 'black' }), []);
+    // The white inner surfaces are separate planes laid on the slabs' inner faces (a plane
+    // faces its local +Z, the rotations turn it towards the inside), rather than per-face
+    // materials on the slabs: the path tracer mixes up materials on meshes with a material array.
+    // EPS keeps them just off the slab faces so the two don't overlap
+    const EPS = 0.1;
+    const innerPlanes: { size: [number, number]; position: Vec3; rotation: Vec3 }[] = [
+        // under the top, facing down
+        { size: [width, height], position: [0, h - EPS, 0], rotation: [Math.PI / 2, 0, 0] },
+        // on the +X side, facing -X / on the -X side, facing +X
+        { size: [height, h], position: [width / 2 - EPS, h / 2, 0], rotation: [0, -Math.PI / 2, 0] },
+        { size: [height, h], position: [-width / 2 + EPS, h / 2, 0], rotation: [0, Math.PI / 2, 0] },
+        // on the +Z side, facing -Z / on the -Z side, facing +Z
+        { size: [width, h], position: [0, h / 2, height / 2 - EPS], rotation: [0, Math.PI, 0] },
+        { size: [width, h], position: [0, h / 2, -height / 2 + EPS], rotation: [0, 0, 0] },
+    ];
+
+    // shared by all slabs (black) and all inner planes (white)
+    // specularIntensity: 0 removes the ~4% surface reflection every non-metal has, which
+    // otherwise shows as a grey sheen in the path tracer: this is an "ideal" black
+    const outerMaterial = useMemo(
+        () => new THREE.MeshPhysicalMaterial({ color: 'black', specularIntensity: 0.01 }),
+        [],
+    );
     // the inner faces glow by themselves (emissive) in the light's color, since the light
     // shines down and barely reaches them. With the path tracer they also emit real light
     const innerMaterial = useMemo(
@@ -66,14 +86,13 @@ export const NeonPanel = ({
     return (
         <group position={position}>
             {housingSlabs.map((slab, i) => (
-                <mesh
-                    key={i}
-                    position={slab.position}
-                    material={[0, 1, 2, 3, 4, 5].map((face) =>
-                        face === slab.innerFace ? innerMaterial : outerMaterial,
-                    )}
-                >
+                <mesh key={`slab-${i}`} position={slab.position} material={outerMaterial}>
                     <boxGeometry args={slab.size} />
+                </mesh>
+            ))}
+            {innerPlanes.map((plane, i) => (
+                <mesh key={`inner-${i}`} position={plane.position} rotation={plane.rotation} material={innerMaterial}>
+                    <planeGeometry args={plane.size} />
                 </mesh>
             ))}
 
@@ -82,14 +101,16 @@ export const NeonPanel = ({
             <group position={[0, lightHeightToBottom, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                 {/* The visible panel: the path tracer never shows lights to the camera directly,
                     so this emissive (self-lit) surface is what you see, in both renderers.
+                    Its brightness matches the light's, otherwise the path tracer shows it as a
+                    dull grey next to the brightly lit floor.
                     It sits 0.5 behind the light (local +Z is up), so it doesn't block the light's
-                    rays; toneMapped={false} keeps it at full brightness */}
-                <mesh position={[0, 0, 0.5]}>
+                    rays; toneMapped={false} keeps it at full brightness in the normal renderer */}
+                <mesh position={[0, 0.5, 0]}>
                     <planeGeometry args={[width, height]} />
                     <meshStandardMaterial
                         color="black"
                         emissive={color}
-                        emissiveIntensity={1}
+                        emissiveIntensity={intensity}
                         side={THREE.DoubleSide}
                         toneMapped={false}
                     />

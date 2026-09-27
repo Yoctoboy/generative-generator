@@ -20,7 +20,7 @@ type TableProps = {
 // real reflections of the room come with path tracing
 export const Table = ({
     position: [x, y, z],
-    width = 200,
+    width = 230,
     height = 140,
     tableHeight = 80,
     color = '#000000',

@@ -19,7 +19,7 @@ type PathTracerProps = {
 // Objects with userData.skipPathTracing are left out of the path traced image
 // (the fat edge lines are Meshes under the hood and would be traced as garbage geometry).
 // Must be placed last inside the <Canvas>, so the scene is fully mounted when it's read
-export const PathTracer = ({ enabled = true, bounces = 3, renderScale = 1, tiles = 5, sceneKey }: PathTracerProps) => {
+export const PathTracer = ({ enabled = true, bounces = 5, renderScale = 1, tiles = 5, sceneKey }: PathTracerProps) => {
     const gl = useThree((state) => state.gl);
     const scene = useThree((state) => state.scene);
     const camera = useThree((state) => state.camera);
@@ -35,9 +35,12 @@ export const PathTracer = ({ enabled = true, bounces = 3, renderScale = 1, tiles
         pathTracer.reset();
     }, [pathTracer, enabled, bounces, renderScale, tiles]);
 
-    // The path tracer works on its own copy of the scene (merged geometry + BVH),
-    // so it doesn't see changes to the scene until this runs again
+    // The path tracer works on its own copy of the scene (merged geometry + BVH + materials),
+    // so it doesn't see changes to the scene until this runs again. Hot reloads of a component
+    // (e.g. changing a color in Table.tsx) don't trigger it: untick/tick the checkbox to rebuild.
+    // Only built while enabled, so having path tracing off costs nothing
     useEffect(() => {
+        if (!enabled) return;
         const hidden: THREE.Object3D[] = [];
         scene.traverse((object) => {
             if (object.userData.skipPathTracing && object.visible) {
@@ -47,7 +50,7 @@ export const PathTracer = ({ enabled = true, bounces = 3, renderScale = 1, tiles
         });
         pathTracer.setScene(scene, camera);
         hidden.forEach((object) => (object.visible = true));
-    }, [pathTracer, scene, camera, sceneKey]);
+    }, [pathTracer, scene, camera, sceneKey, enabled]);
 
     const lastCameraMatrix = useMemo(() => new THREE.Matrix4(), []);
     const lastProjectionMatrix = useMemo(() => new THREE.Matrix4(), []);
@@ -55,6 +58,11 @@ export const PathTracer = ({ enabled = true, bounces = 3, renderScale = 1, tiles
     // Priority 1 takes over rendering from react-three-fiber: each frame adds one
     // sample to the image, which gets less grainy over time. Moving the camera restarts it
     useFrame(() => {
+        // when off, the path tracer has no copy of the scene: render it normally instead
+        if (!enabled) {
+            gl.render(scene, camera);
+            return;
+        }
         camera.updateMatrixWorld();
         if (!lastCameraMatrix.equals(camera.matrixWorld) || !lastProjectionMatrix.equals(camera.projectionMatrix)) {
             lastCameraMatrix.copy(camera.matrixWorld);
