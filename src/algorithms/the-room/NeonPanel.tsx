@@ -70,11 +70,13 @@ export const NeonPanel = ({
             <group position={[0, lightHeightToBottom, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                 {/* The visible panel: the path tracer never shows lights to the camera directly,
                     so this emissive (self-lit) surface is what you see, in both renderers.
-                    Its brightness matches the light's, otherwise the path tracer shows it as a
-                    dull grey next to the brightly lit floor.
+                    It's a pathTracerOverlay: left out of the path tracer and drawn on top of its
+                    image. Otherwise bounced rays that reach the light also hit this panel right
+                    behind it and add its glow on top of the light's (too bright, and very grainy
+                    since the tracer only finds it by chance).
                     It sits 0.5 behind the light (local +Z is up), so it doesn't block the light's
-                    rays; toneMapped={false} keeps it at full brightness in the normal renderer */}
-                <mesh position={[0, 0.5, 0]}>
+                    rays; toneMapped={false} keeps it at full brightness */}
+                <mesh position={[0, 0.5, 0]} userData={{ pathTracerOverlay: true }}>
                     <planeGeometry args={[width, height]} />
                     <meshStandardMaterial
                         color="black"

@@ -14,17 +14,39 @@ type PathTracerProps = {
     tiles?: number;
     // change this value to rebuild the path tracer's copy of the scene (e.g. after regenerating walls)
     sceneKey?: unknown;
+    // blurs glossy reflections seen after a bounce (0 = off, 1 = max): removes the bright specks
+    // made by light going floor -> glossy table -> light, which almost never converge
+    filterGlossyFactor?: number;
 };
 
 // Objects with userData.skipPathTracing are left out of the path traced image
 // (the fat edge lines are Meshes under the hood and would be traced as garbage geometry).
+// Objects with userData.pathTracerOverlay are left out too, and drawn normally (rasterized) on top
+// of the path traced image instead, hidden where the rest of the scene is in front of them.
+// Used for light surfaces: the path tracer never shows lights to the camera.
 // Must be placed last inside the <Canvas>, so the scene is fully mounted when it's read
-export const PathTracer = ({ enabled = true, bounces = 5, renderScale = 1, tiles = 5, sceneKey }: PathTracerProps) => {
+export const PathTracer = ({
+    enabled = true,
+    bounces = 5,
+    renderScale = 1,
+    tiles = 5,
+    sceneKey,
+    filterGlossyFactor = 0.5,
+}: PathTracerProps) => {
     const gl = useThree((state) => state.gl);
     const scene = useThree((state) => state.scene);
     const camera = useThree((state) => state.camera);
 
-    const pathTracer = useMemo(() => new WebGLPathTracer(gl), [gl]);
+    const pathTracer = useMemo(() => {
+        const pathTracer = new WebGLPathTracer(gl);
+        // The default random numbers ("stratified list") are the same for every pixel of a sample,
+        // only shifted by a small tiled blue noise texture: neighbouring pixels pick nearly the same
+        // points on the area light, which shows as banding in soft shadows that never goes away.
+        // PCG gives each pixel its own independent random numbers: plain noise that averages out.
+        // Not exposed by the library, hence reaching into its (untyped) internal renderer
+        Reflect.get(pathTracer, '_pathTracer').material.setDefine('RANDOM_TYPE', 1);
+        return pathTracer;
+    }, [gl]);
     useEffect(() => () => pathTracer.dispose(), [pathTracer]);
 
     useEffect(() => {
@@ -32,8 +54,9 @@ export const PathTracer = ({ enabled = true, bounces = 5, renderScale = 1, tiles
         pathTracer.bounces = bounces;
         pathTracer.renderScale = renderScale;
         pathTracer.tiles.set(tiles, tiles);
+        pathTracer.filterGlossyFactor = filterGlossyFactor;
         pathTracer.reset();
-    }, [pathTracer, enabled, bounces, renderScale, tiles]);
+    }, [pathTracer, enabled, bounces, renderScale, tiles, filterGlossyFactor]);
 
     // The path tracer works on its own copy of the scene (merged geometry + BVH + materials),
     // so it doesn't see changes to the scene until this runs again. Hot reloads of a component
@@ -43,7 +66,7 @@ export const PathTracer = ({ enabled = true, bounces = 5, renderScale = 1, tiles
         if (!enabled) return;
         const hidden: THREE.Object3D[] = [];
         scene.traverse((object) => {
-            if (object.userData.skipPathTracing && object.visible) {
+            if ((object.userData.skipPathTracing || object.userData.pathTracerOverlay) && object.visible) {
                 object.visible = false;
                 hidden.push(object);
             }
@@ -70,7 +93,43 @@ export const PathTracer = ({ enabled = true, bounces = 5, renderScale = 1, tiles
             pathTracer.updateCamera();
         }
         pathTracer.renderSample();
+        drawOverlays();
     }, 1);
+
+    // writes depth only, no color
+    const depthOnlyMaterial = useMemo(() => new THREE.MeshBasicMaterial({ colorWrite: false }), []);
+    useEffect(() => () => depthOnlyMaterial.dispose(), [depthOnlyMaterial]);
+
+    const drawOverlays = () => {
+        const overlays: THREE.Object3D[] = [];
+        const skipped: THREE.Object3D[] = [];
+        scene.traverse((object) => {
+            if (!object.visible) return;
+            if (object.userData.pathTracerOverlay) overlays.push(object);
+            else if (object.userData.skipPathTracing) skipped.push(object);
+        });
+        if (overlays.length === 0) return;
+
+        const autoClear = gl.autoClear;
+        const background = scene.background;
+        gl.autoClear = false;
+        scene.background = null;
+        gl.clearDepth();
+
+        // depth of what the path tracer drew, so the overlays get hidden behind it
+        overlays.forEach((object) => (object.visible = false));
+        skipped.forEach((object) => (object.visible = false));
+        scene.overrideMaterial = depthOnlyMaterial;
+        gl.render(scene, camera);
+        scene.overrideMaterial = null;
+        overlays.forEach((object) => (object.visible = true));
+        skipped.forEach((object) => (object.visible = true));
+
+        overlays.forEach((object) => gl.render(object, camera));
+
+        scene.background = background;
+        gl.autoClear = autoClear;
+    };
 
     return null;
 };
