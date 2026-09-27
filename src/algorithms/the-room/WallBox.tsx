@@ -33,7 +33,10 @@ export const WallBox = ({ x, y, z, width, height, depth, color, edgeWidth = 1 }:
             // smooths line edges using the canvas's MSAA samples, nearly free
             alphaToCoverage: true,
         });
-        return new LineSegments2(lineGeometry, material);
+        const lines = new LineSegments2(lineGeometry, material);
+        // LineSegments2 is a Mesh under the hood, the path tracer would trace it as garbage geometry
+        lines.userData.skipPathTracing = true;
+        return lines;
     }, [geometry, edgeWidth]);
 
     // boxGeometry is centered on its origin, so shift by half the size

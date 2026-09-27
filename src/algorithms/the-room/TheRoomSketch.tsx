@@ -1,11 +1,13 @@
 import { CameraControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { randInt } from 'three/src/math/MathUtils.js';
 import { Parameter, ParameterType, ParameterValues, randomSeedParameter } from '../../components/Parameter';
 import { SketchType } from '../Sketch';
 import { CameraInfo } from './CameraInfo';
+import { NeonPanel } from './NeonPanel';
+import { PathTracer } from './PathTracer';
 import { Wall } from './Wall';
 import { WallBox } from './WallBox';
 
@@ -17,6 +19,11 @@ export const MINZ = 0,
 
 const parameters = [
     randomSeedParameter,
+    {
+        name: 'Path Tracing',
+        initialValue: false,
+        type: ParameterType.CHECKBOX,
+    },
     // {
     //     name: 'Island Amount',
     //     minValue: 4,
@@ -32,7 +39,12 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
     const cameraInfoRef = useRef<HTMLDivElement | null>(null);
 
     const roomSize = 1000;
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
+    // created once: a new camera on each render would make react-three-fiber swap cameras,
+    // which also makes the path tracer rebuild its whole copy of the scene
+    const camera = useMemo(
+        () => new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000),
+        [],
+    );
 
     // CameraControls owns the camera orientation (camera.lookAt gets overridden),
     // so the initial view is set on the controls, once, when they are created
@@ -75,7 +87,14 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
 
                 {/* floor */}
                 <WallBox x={0} y={0} z={0} width={1000} depth={1000} height={1} color={0xbbbbbb} />
-                <ambientLight intensity={Math.PI} />
+                {/* horizontally centered in the room, shining down */}
+                <NeonPanel position={[roomSize / 2, roomSize / 4, roomSize / 2]} />
+
+                {/* ignored by the path tracer, which only uses real light sources.
+                    Kept low so the neon's light is visible */}
+                <ambientLight intensity={0.2} />
+
+                {/* <PathTracer enabled={paramValues['Path Tracing'] as boolean} /> */}
             </Canvas>
         </div>
     );
