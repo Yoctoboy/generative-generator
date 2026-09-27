@@ -93,13 +93,16 @@ export const PathTracer = ({
     const overlayTarget = useMemo(() => new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType }), []);
     // threshold 0: everything in overlayTarget blooms, since it only holds the overlays
     const bloomPass = useMemo(() => new UnrealBloomPass(new THREE.Vector2(1, 1), bloomStrength, bloomRadius, 0), []);
-    // adds overlayTarget (overlays + their glow) on top of the canvas
+    // adds overlayTarget (overlays + their glow) on top of the canvas.
+    // ONE + ONE: colors are added as is, whatever the alpha additive overlays left in the target
     const compositeQuad = useMemo(
         () =>
             new FullScreenQuad(
                 new THREE.MeshBasicMaterial({
                     map: overlayTarget.texture,
-                    blending: THREE.AdditiveBlending,
+                    blending: THREE.CustomBlending,
+                    blendSrc: THREE.OneFactor,
+                    blendDst: THREE.OneFactor,
                     transparent: true,
                     depthTest: false,
                     depthWrite: false,

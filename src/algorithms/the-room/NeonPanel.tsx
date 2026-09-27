@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
+import { NeonDust } from './NeonDust';
 
 // RectAreaLight needs lookup tables to be loaded once before it can light anything
 RectAreaLightUniformsLib.init();
@@ -17,6 +18,8 @@ type NeonPanelProps = {
     housingThickness?: number;
     // how far the light sits above the housing's open bottom (recessed inside it)
     lightHeightToBottom?: number;
+    // dust motes hanging in the light under the panel (0 = none)
+    dustCount?: number;
 };
 
 // A glowing rectangle: a visible panel for the looks, plus a RectAreaLight (the only
@@ -31,6 +34,7 @@ export const NeonPanel = ({
     housingHeight = 1000,
     housingThickness = 24,
     lightHeightToBottom = 1,
+    dustCount = 800,
 }: NeonPanelProps) => {
     // Black open-bottomed box around the light: a top slab and four side slabs
     // enclosing the panel's footprint (width along X, height along Z), from the
@@ -89,6 +93,12 @@ export const NeonPanel = ({
 
                 <rectAreaLight width={width} height={height} color={color} intensity={intensity} />
             </group>
+
+            {dustCount > 0 && (
+                <group position={[0, lightHeightToBottom, 0]}>
+                    <NeonDust panelWidth={width} panelHeight={height} color={color} count={dustCount} />
+                </group>
+            )}
         </group>
     );
 };

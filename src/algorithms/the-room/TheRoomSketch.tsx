@@ -25,6 +25,14 @@ const parameters = [
         initialValue: false,
         type: ParameterType.CHECKBOX,
     },
+    {
+        name: 'Dust Amount',
+        minValue: 0,
+        maxValue: 4000,
+        step: 100,
+        initialValue: 800,
+        type: ParameterType.SLIDER,
+    },
     // {
     //     name: 'Island Amount',
     //     minValue: 4,
@@ -91,19 +99,21 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
                 <group key={3} position={[0, 0, roomSize]} rotation={[0, Math.PI / 2, 0]}>
                     <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} />
                 </group>
-
                 {/* floor */}
                 <WallBox x={0} y={0} z={0} width={roomSize} depth={roomSize} height={1} color={0xbbbbbb} />
-                {/* horizontally centered in the room, shining down */}
+
                 {/* the inner glow is a fake for the normal renderer: the path tracer lights the rim
                     for real, and small glowing surfaces are a big source of grain (white specks) */}
-                <NeonPanel position={[0.4 * roomSize, roomSize * 0.23, 0.4 * roomSize]} />
+                <NeonPanel
+                    position={[0.4 * roomSize, roomSize * 0.23, 0.4 * roomSize]}
+                    dustCount={paramValues['Dust Amount'] as number}
+                />
                 {/* right under the light, standing on the floor (whose top is at y = 1) */}
                 <Table position={[0.4 * roomSize, 1, 0.4 * roomSize]} />
 
                 {/* ignored by the path tracer, which only uses real light sources.
                     Kept low so the neon's light is visible */}
-                <ambientLight intensity={0.2} />
+                <ambientLight intensity={0.1} />
 
                 <PathTracer enabled={paramValues['Path Tracing'] as boolean} />
             </Canvas>
