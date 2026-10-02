@@ -48,6 +48,7 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
     const cameraInfoRef = useRef<HTMLDivElement | null>(null);
 
     const roomSize = 1000;
+    const seed = paramValues['Random Seed'] as number;
     // created once: a new camera on each render would make react-three-fiber swap cameras,
     // which also makes the path tracer rebuild its whole copy of the scene
     const camera = useMemo(
@@ -86,18 +87,18 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
                 {/* origin marker: red = X, green = Y, blue = Z, drawn on top of everything */}
                 {/* <axesHelper args={[200]} renderOrder={1} material-depthTest={false} /> */}
 
-                {/* walls */}
+                {/* walls: each gets its own seed derived from the sketch seed, otherwise all 4 would be identical */}
                 <group key={0} position={[0, 0, 0]} rotation={[0, 0, 0]}>
-                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} />
+                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} seed={seed} />
                 </group>
                 <group key={1} position={[roomSize, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
-                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} />
+                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} seed={seed + 1} />
                 </group>
                 <group key={2} position={[roomSize, 0, roomSize]} rotation={[0, Math.PI, 0]}>
-                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} />
+                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} seed={seed + 2} />
                 </group>
                 <group key={3} position={[0, 0, roomSize]} rotation={[0, Math.PI / 2, 0]}>
-                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} />
+                    <Wall totalHeight={roomSize} totalLength={roomSize} gridUnit={20} seed={seed + 3} />
                 </group>
                 {/* floor */}
                 <WallBox x={0} y={0} z={0} width={roomSize} depth={roomSize} height={1} color={0xbbbbbb} />
@@ -107,7 +108,7 @@ export const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof pa
                 <NeonPanel
                     position={[0.4 * roomSize, roomSize * 0.23, 0.4 * roomSize]}
                     dustCount={paramValues['Dust Amount'] as number}
-                    dustSeed={paramValues['Random Seed'] as number}
+                    dustSeed={seed}
                 />
                 {/* right under the light, standing on the floor (whose top is at y = 1) */}
                 <Table position={[0.4 * roomSize, 1, 0.4 * roomSize]} />

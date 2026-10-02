@@ -31,7 +31,7 @@ export const NeonPanel = ({
     position,
     width = 250,
     height = 160,
-    color = 'white',
+    color = 0xff33ff,
     intensity = 10,
     housingHeight = 1000,
     housingThickness = 24,
@@ -99,13 +99,7 @@ export const NeonPanel = ({
 
             {dustCount > 0 && (
                 <group position={[0, lightHeightToBottom, 0]}>
-                    <NeonDust
-                        panelWidth={width}
-                        panelHeight={height}
-                        seed={dustSeed}
-                        color={color}
-                        count={dustCount}
-                    />
+                    <NeonDust panelWidth={width} panelHeight={height} seed={dustSeed} color={color} count={dustCount} />
                 </group>
             )}
         </group>
