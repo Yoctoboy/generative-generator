@@ -2,12 +2,7 @@ import { ThemeProvider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { SketchType } from './algorithms/Sketch';
-import BaseSketch from './algorithms/base/BaseSketch';
-import DiamondSquareSketch from './algorithms/diamond-square/DiamondSquareSketch';
-import GlitchyVHSSketch from './algorithms/glitchy-vhs/GlitchyVHSSketch';
-import SortedFaceSketch from './algorithms/sorted-face/SortedFaceSketch';
-import SquareCloudsSketch from './algorithms/square-clouds/SquareCloudsSketch';
-import WarpedSketch from './algorithms/warped/WarpedSketch';
+import { availableSketches, defaultSketch } from './algorithms/availableSketches';
 import { PageContainer } from './components/PageContainer';
 import { getParametersInitialValues, ParameterType, ParameterValues } from './components/Parameter';
 import { ParameterCheckbox } from './components/ParameterCheckbox';
@@ -20,32 +15,11 @@ import { theme } from './theme';
 import { ParameterSeed } from './components/ParameterSeed';
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { ParameterChoice } from './components/ParameterChoice';
-import TendrilsSketch from './algorithms/tendrils/TendrilsSketch';
-import SmokeCloudSketch from './algorithms/smoke-cloud/SmokeCloudSketch';
-import BloomSketch from './algorithms/bloom/BloomSketch';
-import HeightMapSketch from './algorithms/height-map/HeightMapSketch';
-import TheRiverSketch from './algorithms/the-river/TheRiverSketch';
-import TheRoomSketch from './algorithms/the-room/TheRoomSketch';
-
-const availableSketches = [
-    BaseSketch,
-    DiamondSquareSketch,
-    SortedFaceSketch,
-    SquareCloudsSketch,
-    GlitchyVHSSketch,
-    WarpedSketch,
-    TendrilsSketch,
-    SmokeCloudSketch,
-    BloomSketch,
-    HeightMapSketch,
-    TheRiverSketch,
-    TheRoomSketch,
-];
 
 const sketchesNames = availableSketches.map((sketch) => sketch.sketchName);
 
 function App() {
-    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(TheRoomSketch);
+    const [CurrentSketch, setCurrentSketch] = useState<SketchType>(defaultSketch);
 
     const [currentSketchName, setCurrentSketchName] = useState<string>(CurrentSketch.sketchName);
     useEffect(() => {

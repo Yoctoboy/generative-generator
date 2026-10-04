@@ -10,7 +10,8 @@
         "lint": "eslint .",
         "lint:fix": "eslint --fix",
         "format:fix": "which prettier",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "new-sketch": "node scripts/new-sketch.mjs"
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",
