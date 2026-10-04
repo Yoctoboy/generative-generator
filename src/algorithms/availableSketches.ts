@@ -11,6 +11,7 @@ import TendrilsSketch from './tendrils/TendrilsSketch';
 import TheRiverSketch from './the-river/TheRiverSketch';
 import TheRoomSketch from './the-room/TheRoomSketch';
 import WarpedSketch from './warped/WarpedSketch';
+import UnknownPleasuresSketch from './unknown-pleasures/UnknownPleasuresSketch';
 
 export const availableSketches = [
     BaseSketch,
@@ -25,7 +26,8 @@ export const availableSketches = [
     HeightMapSketch,
     TheRiverSketch,
     TheRoomSketch,
+    UnknownPleasuresSketch,
 ];
 
 // The sketch displayed when the app loads
-export const defaultSketch: SketchType = TheRoomSketch;
+export const defaultSketch: SketchType = UnknownPleasuresSketch;
