@@ -12,6 +12,7 @@ import TheRiverSketch from './the-river/TheRiverSketch';
 import TheRoomSketch from './the-room/TheRoomSketch';
 import WarpedSketch from './warped/WarpedSketch';
 import UnknownPleasuresSketch from './unknown-pleasures/UnknownPleasuresSketch';
+import WatercolorSketch from './watercolor/WatercolorSketch';
 
 export const availableSketches = [
     BaseSketch,
@@ -27,7 +28,8 @@ export const availableSketches = [
     TheRiverSketch,
     TheRoomSketch,
     UnknownPleasuresSketch,
+    WatercolorSketch,
 ];
 
 // The sketch displayed when the app loads
-export const defaultSketch: SketchType = UnknownPleasuresSketch;
+export const defaultSketch: SketchType = WatercolorSketch;
