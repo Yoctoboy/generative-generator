@@ -5,7 +5,7 @@ import { seedRandomnessModules } from '../utils/seedRandomnessModules';
 import { createSeededRandom } from '../utils/seededRandom';
 import { parameters } from './parameters';
 
-export const drawWall = (p5: P5CanvasInstance, paramValues: ParameterValues<typeof parameters>) => {
+export const drawWall = (p5: P5CanvasInstance, paramValues: ParameterValues<typeof parameters>, size: number) => {
     const random = createSeededRandom(paramValues['Random Seed']);
     const randomInterval = (min: number, max: number) => {
         return random() * (max - min) + min;
@@ -15,13 +15,9 @@ export const drawWall = (p5: P5CanvasInstance, paramValues: ParameterValues<type
     };
     seedRandomnessModules(p5, paramValues['Random Seed']);
 
-    const size = 2048;
-    p5.createCanvas(size, size);
-    p5.background(255);
-
     const brickHeight = paramValues['Brick Height'];
     const brickLength = paramValues['Brick Length'];
-    const startHeight = Math.floor((0.45 * size) / brickHeight) * brickHeight;
+    const startHeight = Math.floor((paramValues['Wall Height Start'] * size) / brickHeight) * brickHeight;
     const centerX = size / 2;
     const centerY = startHeight;
     const fullDrawDistanceFromCenter = paramValues['Full Draw Distance'];

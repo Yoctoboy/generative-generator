@@ -19,6 +19,14 @@ export const parameters = [
         type: ParameterType.SLIDER,
     },
     {
+        name: 'Wall Height Start',
+        minValue: 0.1,
+        maxValue: 1,
+        initialValue: 0.45,
+        step: 0.01,
+        type: ParameterType.SLIDER,
+    },
+    {
         name: 'Full Draw Distance',
         minValue: 100,
         maxValue: 1000,
@@ -52,7 +60,7 @@ export const parameters = [
     },
     {
         name: 'Wall Border Width',
-        minValue: 1,
+        minValue: 0.1,
         maxValue: 5,
         initialValue: 1.5,
         step: 0.1,
