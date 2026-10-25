@@ -2,7 +2,8 @@ import { P5CanvasInstance, ReactP5Wrapper } from '@p5-wrapper/react';
 import { ParameterValues } from '../../components/Parameter';
 import { SketchType } from '../Sketch';
 import { seedRandomnessModules } from '../utils/seedRandomnessModules';
-import { parameters, setup } from './setup';
+import { setup } from './setup';
+import { parameters } from './parameters';
 
 const Sketch = ({ paramValues }: { paramValues: ParameterValues<typeof parameters> }) => {
     const sketch = (p5: P5CanvasInstance) => {

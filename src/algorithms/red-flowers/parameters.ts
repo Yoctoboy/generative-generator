@@ -1,0 +1,61 @@
+import { Parameter, ParameterType, randomSeedParameter } from '../../components/Parameter';
+
+export const parameters = [
+    randomSeedParameter,
+    {
+        name: 'Brick Height',
+        minValue: 30,
+        maxValue: 100,
+        initialValue: 50,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Brick Length',
+        minValue: 30,
+        maxValue: 300,
+        initialValue: 110,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Full Draw Distance',
+        minValue: 100,
+        maxValue: 1000,
+        initialValue: 300,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Alpha Per Point',
+        minValue: 1,
+        maxValue: 255,
+        initialValue: 50,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Average Point Width',
+        minValue: 1,
+        maxValue: 10,
+        initialValue: 3,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Point Density Per Pixel',
+        minValue: 1,
+        maxValue: 10,
+        initialValue: 3,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Wall Border Width',
+        minValue: 1,
+        maxValue: 5,
+        initialValue: 1.5,
+        step: 0.1,
+        type: ParameterType.SLIDER,
+    },
+] as const satisfies Parameter[];
