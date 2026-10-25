@@ -40,7 +40,7 @@ export const drawWall = (p5: P5CanvasInstance, paramValues: ParameterValues<type
     };
     p5.stroke(0, 0, 0, alphaPerPoint);
     for (let j = 0; j < size; j++) {
-        for (let i = startHeight; i < size; i++) {
+        for (let i = startHeight - 2; i < size; i++) {
             const distanceFromCenter = Math.sqrt((j - centerX) * (j - centerX) + (i - centerY) * (i - centerY));
             const fromCenterProbability =
                 distanceFromCenter < fullDrawDistanceFromCenter
