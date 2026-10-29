@@ -27,7 +27,7 @@ export default [
             'react/no-unknown-property': ['off', { ignore: ['JSX'] }],
             '@typescript-eslint/consistent-type-assertions': [
                 'error',
-                { assertionStyle: 'never' },
+                { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' },
             ],
         },
         settings: {
