@@ -1,12 +1,20 @@
 import { P5CanvasInstance } from '@p5-wrapper/react';
 import { ParameterValues } from '../../components/Parameter';
-import { clip } from '../utils/mathFunctions';
+import { seedRandomnessModules } from '../utils/seedRandomnessModules';
 import { createSeededRandom } from '../utils/seededRandom';
+import { setup as watercolorSetup } from '../watercolor/setup';
+import { drawPetals } from './drawPetals';
 import { parameters } from './parameters';
 
 const normalize = (vec: [number, number]): [number, number] => {
     const norm = Math.sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
     return [vec[0] / norm, vec[1] / norm];
+};
+
+// beginClip / endClip exist since p5 1.9 but are missing from @types/p5 1.7.x
+type ClippableP5 = P5CanvasInstance & {
+    beginClip: (options?: { invert?: boolean }) => void;
+    endClip: () => void;
 };
 
 export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<typeof parameters>, size: number) => {
@@ -27,6 +35,7 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
     const wallBorderWidth = paramValues['Wall Border Width'];
     const gapBetweenFlowers = 40;
 
+    const petals: [number, number, number][] = [];
     const stemsToDraw = randomInterval(3, 6);
     for (let i = 0; i < stemsToDraw; i++) {
         p5.noFill();
@@ -42,7 +51,7 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
         p5.vertex(startX, startY);
         let curX = startX,
             curY = startY;
-        let lastFlowerStep = -Infinity;
+        let lastFlowerStep = 0;
         const flowersList: [number, number, [number, number]][] = [];
         const stemSteps = randomInterval(400, 700);
         for (let step = 0; step < stemSteps; step++) {
@@ -85,9 +94,26 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
                 ]);
             }
             p5.endShape();
-            p5.stroke(190, 0, 0);
-            p5.fill(190, 0, 0);
-            p5.circle(curX, curY, randomInterval(10, 25));
+            petals.push([curX, curY, randomInterval(10, 30)]);
         }
     }
+
+
+    const clippable = p5 as ClippableP5;
+    p5.push();
+    clippable.beginClip();
+    for (const [x, y, diameter] of petals) {
+        // p5 doesn't start a new subpath per shape while clipping, so consecutive
+        // circles get joined by straight lines unless we move to each arc's start point
+        p5.drawingContext.moveTo(x + diameter / 2, y);
+        p5.circle(x, y, diameter);
+    }
+    clippable.endClip();
+    // the clip edge is antialiased on every draw call, so drawing the ~100 translucent layers directly
+    // through it accumulates fringe pixels: render offscreen, then blit once through the clip
+    const petalsBuffer = p5.createGraphics(size, size) as P5CanvasInstance;
+    drawPetals(petalsBuffer, { ...paramValues, 'Deformation steps': 7, Layers: 80, 'Randomization Amount': 500 });
+    p5.image(petalsBuffer as unknown as Parameters<typeof p5.image>[0], 0, 0);
+    petalsBuffer.remove();
+    p5.pop();
 };
