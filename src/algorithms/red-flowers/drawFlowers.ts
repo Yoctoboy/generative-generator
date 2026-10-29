@@ -112,7 +112,7 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
     // the clip edge is antialiased on every draw call, so drawing the ~100 translucent layers directly
     // through it accumulates fringe pixels: render offscreen, then blit once through the clip
     const petalsBuffer = p5.createGraphics(size, size) as P5CanvasInstance;
-    drawPetals(petalsBuffer, { ...paramValues, 'Deformation steps': 7, Layers: 80, 'Randomization Amount': 500 });
+    drawPetals(petalsBuffer, { ...paramValues, 'Deformation steps': 7, 'Layers per source': 80, 'Randomization Amount': 500, 'Sources': 5 });
     p5.image(petalsBuffer as unknown as Parameters<typeof p5.image>[0], 0, 0);
     petalsBuffer.remove();
     p5.pop();

@@ -7,6 +7,14 @@ import { createSeededRandom } from '../utils/seededRandom';
 const parameters = [
     randomSeedParameter,
     {
+        name: 'Sources',
+        minValue: 1,
+        maxValue: 10,
+        initialValue: 3,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
         name: 'Deformation steps',
         minValue: 0,
         maxValue: 20,
@@ -15,7 +23,7 @@ const parameters = [
         type: ParameterType.SLIDER,
     },
     {
-        name: 'Layers',
+        name: 'Layers per source',
         minValue: 1,
         maxValue: 200,
         initialValue: 80,
@@ -55,34 +63,39 @@ export const drawPetals = ((p5: P5CanvasInstance, paramValues: ParameterValues<t
     }
 
     const size = 2048;
-    const initialCoords: Coords[] = [
-        new Coords(size / 5, size / 5),
-        new Coords((4 * size) / 5, size / 5),
-        new Coords((4 * size) / 5, (4 * size) / 5),
-        new Coords(size / 5, (4 * size) / 5),
-    ];
-    p5.background(255);
+    // p5.createCanvas(size, size);
+    p5.background(0);
     p5.noStroke();
-    p5.fill(p5.random(0, 256), p5.random(0, 256), p5.random(0, 256), 255 / paramValues['Layers']);
-    for (let layer = 0; layer < paramValues['Layers']; layer++) {
-        let coords = [...initialCoords];
-        for (let s = 0; s < paramValues['Deformation steps']; s++) {
-            const newCoords = [];
-            for (let i = 0; i < 4 * Math.pow(2, s); i++) {
-                const avg = coords[i]
-                    .average(coords[(i + 1) % coords.length])
-                    .randomize(paramValues['Randomization Amount'] / Math.pow(2, s));
-                newCoords.push(avg);
-                newCoords.push(
-                    coords[(i + 1) % coords.length].randomize(paramValues['Randomization Amount'] / Math.pow(2, s)),
-                );
+    for(let sourceIndex = 0; sourceIndex < paramValues["Sources"]; sourceIndex++){
+        // define the coordinates of a square placed somewhat randomly on the canvas
+        const squareSize = p5.random(size/4, size/2);
+        const topLeft = new Coords(p5.random(0, size - squareSize), p5.random(0, size - squareSize));
+        const initialCoords: Coords[] = [
+            topLeft,
+            new Coords(topLeft.x + squareSize, topLeft.y),
+            new Coords(topLeft.x + squareSize, topLeft.y + squareSize),
+            new Coords(topLeft.x, topLeft.y + squareSize),
+        ];
+        p5.fill(p5.random(0, 256), p5.random(0, 256), p5.random(0, 256), 255 / paramValues['Layers per source']);
+        for (let layer = 0; layer < paramValues['Layers per source']; layer++) {
+            let coords = [...initialCoords];
+            for (let s = 0; s < paramValues['Deformation steps']; s++) {
+                const newCoords = [];
+                for (let i = 0; i < 4 * Math.pow(2, s); i++) {
+                    const avg = coords[i]
+                        .average(coords[(i + 1) % coords.length]);
+                    newCoords.push(avg.randomize(paramValues['Randomization Amount'] / Math.pow(2, s)));
+                    newCoords.push(
+                        coords[(i + 1) % coords.length].randomize(paramValues['Randomization Amount'] / Math.pow(2, s)),
+                    );
+                }
+                coords = newCoords;
             }
-            coords = newCoords;
+            p5.beginShape();
+            for (const coord of coords) {
+                p5.vertex(coord.x, coord.y);
+            }
+            p5.endShape(p5.CLOSE);
         }
-        p5.beginShape();
-        for (const coord of coords) {
-            p5.vertex(coord.x, coord.y);
-        }
-        p5.endShape(p5.CLOSE);
     }
 })
