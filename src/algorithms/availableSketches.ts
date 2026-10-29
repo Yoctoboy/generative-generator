@@ -4,6 +4,7 @@ import BloomSketch from './bloom/BloomSketch';
 import DiamondSquareSketch from './diamond-square/DiamondSquareSketch';
 import GlitchyVHSSketch from './glitchy-vhs/GlitchyVHSSketch';
 import HeightMapSketch from './height-map/HeightMapSketch';
+import NebulaeSketch from './nebulae/NebulaeSketch';
 import PyriteSketch from './pyrite/PyriteSketch';
 import RedFlowersSketch from './red-flowers/RedFlowersSketch';
 import SmokeCloudSketch from './smoke-cloud/SmokeCloudSketch';
@@ -33,6 +34,7 @@ export const availableSketches = [
     WatercolorSketch,
     RedFlowersSketch,
     PyriteSketch,
+    NebulaeSketch,
 ];
 
 
