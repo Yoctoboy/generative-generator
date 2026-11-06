@@ -54,16 +54,17 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
 
     const petals: [number, number, number, [number, number]][] = [];
     const stemsToDraw = randomInterval(3, 6);
-    const stemWidthStart = 8;
-    const stemWidthEnd = 2;
+
     for (let i = 0; i < stemsToDraw; i++) {
         p5.stroke(0);
+        const stemWidthStart = p5.random(6, 10);
+        const stemWidthEnd = p5.random(2, 3);
         const startX = randomInterval(
             size / 2 - fullDrawDistanceFromCenter / 2,
             size / 2 + fullDrawDistanceFromCenter / 2,
         );
         const startY = startHeight - 2;
-        let curDirection: [number, number] = normalize([p5.random() < 0.5 ? -1 : 1, p5.random() / 2 - 1]);
+        let curDirection: [number, number] = normalize([p5.random() < 0.5 ? -1 : 1, p5.random() / 2 - 0.7]);
         let curX = startX,
             curY = startY;
         let lastFlowerStep = 0;
@@ -76,7 +77,7 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
             curY += curDirection[1];
             p5.strokeWeight(p5.lerp(stemWidthStart, stemWidthEnd, Math.pow(step / stemSteps, 5)));
             p5.line(prevX, prevY, curX, curY);
-            const gravityFactor = p5.lerp(0.05, 0.35, step / stemSteps);
+            const gravityFactor = p5.lerp(0.05, 0.7, step / stemSteps);
             curDirection = normalize([
                 curDirection[0] + (p5.noise(curX / 500, curY / 500, i) - 0.5) / 10,
                 curDirection[1] + (p5.noise(curX / 500, curY / 500, i + 10) - 0.5) / 10 + gravityFactor,
@@ -87,11 +88,11 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
             }
         }
 
-        // draw all flowers on the stem
+        // draw all flowers mini-stems starting from the main stem
         for (let i = 0; i < flowersList.length; i++) {
+            const miniStemWidthStart = p5.random(3, 4.5);
+            const miniStemWidthEnd = 1.5;
             p5.stroke(0);
-            p5.strokeWeight(4);
-            p5.noFill();
             const flower = flowersList[i];
             const tempDirection = p5
                 .createVector(flower[2][0], flower[2][1])
@@ -100,17 +101,18 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
             const steps = randomInterval(20, 60);
             let curX = flower[0],
                 curY = flower[1];
-            p5.beginShape();
             for (let step = 0; step < steps; step++) {
+                const prevX = curX,
+                    prevY = curY;
                 curX += curDirection[0];
                 curY += curDirection[1];
-                p5.vertex(curX, curY);
+                p5.strokeWeight(p5.lerp(miniStemWidthStart, miniStemWidthEnd, step / steps));
+                p5.line(prevX, prevY, curX, curY);
                 curDirection = normalize([
                     curDirection[0] + (p5.noise(curX / 500, curY / 500, i + 20) - 0.5) / 10,
                     curDirection[1] + (p5.noise(curX / 500, curY / 500, i + 300) - 0.5) / 10 + 0.03,
                 ]);
             }
-            p5.endShape();
             petals.push([curX, curY, p5.random(size / 100, size / 65), [curDirection[0], curDirection[1]]]);
         }
     }
