@@ -9,6 +9,25 @@ const normalize = (vec: [number, number]): [number, number] => {
     return [vec[0] / norm, vec[1] / norm];
 };
 
+const rotateDirectionDegrees = (initialDirection: [number, number], rotationInDegrees: number): [number, number] => {
+    const [x, y] = initialDirection;
+    const theta = (rotationInDegrees * Math.PI) / 180;
+    return [x * Math.cos(theta) - y * Math.sin(theta), x * Math.sin(theta) + y * Math.cos(theta)];
+};
+
+const weightedDirectionAverage = (directions: [number, number][], amounts: number[]): [number, number] => {
+    let summedDirection: [number, number] = [0, 0];
+    for (let i = 0; i < directions.length; i++) {
+        summedDirection = [
+            summedDirection[0] + amounts[i] * directions[i][0],
+            summedDirection[1] + amounts[i] * directions[i][1],
+        ];
+    }
+    return normalize(summedDirection);
+};
+
+const DIST_BETWEEN_LEAF_POINTS = 2;
+
 // beginClip / endClip exist since p5 1.9 but are missing from @types/p5 1.7.x
 type ClippableP5 = P5CanvasInstance & {
     beginClip: (options?: { invert?: boolean }) => void;
@@ -33,7 +52,7 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
     // const wallBorderWidth = paramValues['Wall Border Width'];
     const gapBetweenFlowers = 40;
 
-    const petals: [number, number, number][] = [];
+    const petals: [number, number, number, [number, number]][] = [];
     const stemsToDraw = randomInterval(3, 6);
     const stemWidthStart = 8;
     const stemWidthEnd = 2;
@@ -44,7 +63,7 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
             size / 2 + fullDrawDistanceFromCenter / 2,
         );
         const startY = startHeight - 2;
-        let curAngle: [number, number] = normalize([p5.random() < 0.5 ? -1 : 1, p5.random() / 2 - 1]);
+        let curDirection: [number, number] = normalize([p5.random() < 0.5 ? -1 : 1, p5.random() / 2 - 1]);
         let curX = startX,
             curY = startY;
         let lastFlowerStep = 0;
@@ -53,18 +72,18 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
         for (let step = 0; step < stemSteps; step++) {
             const prevX = curX,
                 prevY = curY;
-            curX += curAngle[0];
-            curY += curAngle[1];
+            curX += curDirection[0];
+            curY += curDirection[1];
             p5.strokeWeight(p5.lerp(stemWidthStart, stemWidthEnd, Math.pow(step / stemSteps, 5)));
             p5.line(prevX, prevY, curX, curY);
             const gravityFactor = p5.lerp(0.05, 0.35, step / stemSteps);
-            curAngle = normalize([
-                curAngle[0] + (p5.noise(curX / 500, curY / 500, i) - 0.5) / 10,
-                curAngle[1] + (p5.noise(curX / 500, curY / 500, i + 10) - 0.5) / 10 + gravityFactor,
+            curDirection = normalize([
+                curDirection[0] + (p5.noise(curX / 500, curY / 500, i) - 0.5) / 10,
+                curDirection[1] + (p5.noise(curX / 500, curY / 500, i + 10) - 0.5) / 10 + gravityFactor,
             ]);
             if (step - lastFlowerStep > gapBetweenFlowers && random() < 0.04) {
                 lastFlowerStep = step;
-                flowersList.push([curX, curY, curAngle]);
+                flowersList.push([curX, curY, curDirection]);
             }
         }
 
@@ -74,36 +93,89 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
             p5.strokeWeight(4);
             p5.noFill();
             const flower = flowersList[i];
-            const tempAngle = p5
+            const tempDirection = p5
                 .createVector(flower[2][0], flower[2][1])
                 .rotate(random() < 0.5 ? p5.HALF_PI : -p5.HALF_PI);
-            let curAngle = [tempAngle.x, tempAngle.y];
+            let curDirection = [tempDirection.x, tempDirection.y];
             const steps = randomInterval(20, 60);
             let curX = flower[0],
                 curY = flower[1];
             p5.beginShape();
             for (let step = 0; step < steps; step++) {
-                curX += curAngle[0];
-                curY += curAngle[1];
+                curX += curDirection[0];
+                curY += curDirection[1];
                 p5.vertex(curX, curY);
-                curAngle = normalize([
-                    curAngle[0] + (p5.noise(curX / 500, curY / 500, i + 20) - 0.5) / 10,
-                    curAngle[1] + (p5.noise(curX / 500, curY / 500, i + 300) - 0.5) / 10 + 0.03,
+                curDirection = normalize([
+                    curDirection[0] + (p5.noise(curX / 500, curY / 500, i + 20) - 0.5) / 10,
+                    curDirection[1] + (p5.noise(curX / 500, curY / 500, i + 300) - 0.5) / 10 + 0.03,
                 ]);
             }
             p5.endShape();
-            petals.push([curX, curY, randomInterval(10, 30)]);
+            petals.push([curX, curY, p5.random(size / 100, size / 65), [curDirection[0], curDirection[1]]]);
         }
     }
 
     const clippable = p5 as ClippableP5;
     p5.push();
     clippable.beginClip();
-    for (const [x, y, diameter] of petals) {
+    for (const [x, y, leafTipDistanceFromStem, normalizedDirection] of petals) {
+        const leafTipCoordinates = [
+            x + normalizedDirection[0] * leafTipDistanceFromStem,
+            y + normalizedDirection[1] * leafTipDistanceFromStem,
+        ];
+        // trace both sides of the leaf from the base to the tip
+        const absoluteInitialDirection = p5.random(40, 115);
+        const leafSides: [number, number][][] = [];
+        for (const initialDirection of [-absoluteInitialDirection, absoluteInitialDirection]) {
+            let currentDirection = rotateDirectionDegrees(normalizedDirection, initialDirection);
+            let currentPoint: [number, number] = [x, y];
+            const sidePoints: [number, number][] = [currentPoint];
+            while (p5.dist(currentPoint[0], currentPoint[1], leafTipCoordinates[0], leafTipCoordinates[1]) > 2) {
+                // new point = old point translated with currentDirection (using a fixes distance)
+                currentPoint = [
+                    currentPoint[0] + currentDirection[0] * DIST_BETWEEN_LEAF_POINTS,
+                    currentPoint[1] + currentDirection[1] * DIST_BETWEEN_LEAF_POINTS,
+                ];
+                sidePoints.push(currentPoint);
+                // new direction = weighted average between old direction, direction towards the tip, and direction towards the mid line of the leaf
+                const directionTowardsTip = normalize([
+                    leafTipCoordinates[0] - currentPoint[0],
+                    leafTipCoordinates[1] - currentPoint[1],
+                ]);
+                // project the current point onto the mid line (base + t * normalizedDirection) to find its closest point
+                const t =
+                    (currentPoint[0] - x) * normalizedDirection[0] + (currentPoint[1] - y) * normalizedDirection[1];
+                const directionTowardsLeafMidLine = normalize([
+                    x + normalizedDirection[0] * t - currentPoint[0],
+                    y + normalizedDirection[1] * t - currentPoint[1],
+                ]);
+                // 2D cross product of (base → currentPoint) with the unit mid line direction
+                const distanceFromCurrentPointToMidLine = Math.abs(
+                    (currentPoint[0] - x) * normalizedDirection[1] - (currentPoint[1] - y) * normalizedDirection[0],
+                );
+                currentDirection = weightedDirectionAverage(
+                    [currentDirection, directionTowardsTip, directionTowardsLeafMidLine],
+                    [10, 10 / distanceFromCurrentPointToMidLine, 1],
+                );
+            }
+            leafSides.push(sidePoints);
+        }
+
+        // a single closed loop (up one side, down the other) so every leaf winds the same way:
+        // the clip uses the nonzero rule, where overlapping opposite windings cancel into holes
+        const leafOutline: [number, number][] = [
+            ...leafSides[0],
+            [leafTipCoordinates[0], leafTipCoordinates[1]],
+            ...leafSides[1].reverse(),
+        ];
         // p5 doesn't start a new subpath per shape while clipping, so consecutive
-        // circles get joined by straight lines unless we move to each arc's start point
-        p5.drawingContext.moveTo(x + diameter / 2, y);
-        p5.circle(x, y, diameter);
+        // leaves get joined by straight lines unless we move to each outline's start point
+        p5.drawingContext.moveTo(leafOutline[0][0], leafOutline[0][1]);
+        p5.beginShape();
+        for (const [px, py] of leafOutline) {
+            p5.vertex(px, py);
+        }
+        p5.endShape(p5.CLOSE);
     }
     clippable.endClip();
     // the clip edge is antialiased on every draw call, so drawing the ~100 translucent layers directly
