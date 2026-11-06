@@ -50,10 +50,11 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
     // const averagePointWidth = paramValues['Average Point Width'];
     // const pointsPerPixel = paramValues['Point Density Per Pixel'];
     // const wallBorderWidth = paramValues['Wall Border Width'];
-    const gapBetweenFlowers = 40;
+    const gapBetweenFlowers = paramValues['Gap Between Flowers'];
+    const flowerDensity = paramValues['Flower Density'];
 
     const petals: [number, number, number, [number, number]][] = [];
-    const stemsToDraw = randomInterval(3, 6);
+    const stemsToDraw = randomInterval(3, 8);
 
     for (let i = 0; i < stemsToDraw; i++) {
         p5.stroke(0);
@@ -68,7 +69,7 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
         let curX = startX,
             curY = startY;
         let lastFlowerStep = 0;
-        const flowersList: [number, number, [number, number]][] = [];
+        const flowersList: [number, number, [number, number], number][] = [];
         const stemSteps = randomInterval(400, 600);
         for (let step = 0; step < stemSteps; step++) {
             const prevX = curX,
@@ -77,14 +78,15 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
             curY += curDirection[1];
             p5.strokeWeight(p5.lerp(stemWidthStart, stemWidthEnd, Math.pow(step / stemSteps, 5)));
             p5.line(prevX, prevY, curX, curY);
-            const gravityFactor = p5.lerp(0.05, 0.7, step / stemSteps);
+            const gravityFactor = p5.lerp(0.05, 0.65, step / stemSteps);
             curDirection = normalize([
                 curDirection[0] + (p5.noise(curX / 500, curY / 500, i) - 0.5) / 10,
                 curDirection[1] + (p5.noise(curX / 500, curY / 500, i + 10) - 0.5) / 10 + gravityFactor,
             ]);
-            if (step - lastFlowerStep > gapBetweenFlowers && random() < 0.04) {
+            if (step - lastFlowerStep > gapBetweenFlowers && random() < flowerDensity) {
                 lastFlowerStep = step;
-                flowersList.push([curX, curY, curDirection]);
+                const miniStemLength = p5.random(p5.lerp(30, 10, step / stemSteps), p5.lerp(60, 20, step / stemSteps));
+                flowersList.push([curX, curY, curDirection, miniStemLength]);
             }
         }
 
@@ -98,7 +100,7 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
                 .createVector(flower[2][0], flower[2][1])
                 .rotate(random() < 0.5 ? p5.HALF_PI : -p5.HALF_PI);
             let curDirection = [tempDirection.x, tempDirection.y];
-            const steps = randomInterval(20, 60);
+            const steps = flower[3];
             let curX = flower[0],
                 curY = flower[1];
             for (let step = 0; step < steps; step++) {

@@ -66,4 +66,20 @@ export const parameters = [
         step: 0.1,
         type: ParameterType.SLIDER,
     },
+    {
+        name: 'Gap Between Flowers',
+        minValue: 0,
+        maxValue: 100,
+        initialValue: 15,
+        step: 1,
+        type: ParameterType.SLIDER,
+    },
+    {
+        name: 'Flower Density',
+        minValue: 0.01,
+        maxValue: 0.5,
+        initialValue: 0.04,
+        step: 0.01,
+        type: ParameterType.SLIDER,
+    },
 ] as const satisfies Parameter[];
