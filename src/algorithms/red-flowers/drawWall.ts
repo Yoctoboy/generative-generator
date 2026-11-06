@@ -25,13 +25,18 @@ export const drawWall = (p5: P5CanvasInstance, paramValues: ParameterValues<type
     const averagePointWidth = paramValues['Average Point Width'];
     const pointsPerPixel = paramValues['Point Density Per Pixel'];
     const wallBorderWidth = paramValues['Wall Border Width'];
+    const verticalBrickBorderOffset = random();
 
     const getDistanceFromBrickBorder = (x: number, y: number) => {
+        const offsetX = x + brickLength * verticalBrickBorderOffset;
         const distanceY = Math.min(y % brickHeight, brickHeight - (y % brickHeight));
         const distanceX =
             Math.floor(y / brickHeight) % 2 == 0
-                ? Math.min(x % brickLength, brickLength - (x % brickLength))
-                : Math.min((x + brickLength / 2) % brickLength, brickLength - ((x + brickLength / 2) % brickLength));
+                ? Math.min(offsetX % brickLength, brickLength - (offsetX % brickLength))
+                : Math.min(
+                      (offsetX + brickLength / 2) % brickLength,
+                      brickLength - ((offsetX + brickLength / 2) % brickLength),
+                  );
         return Math.min(distanceX, distanceY);
     };
     p5.stroke(0, 0, 0, alphaPerPoint);
