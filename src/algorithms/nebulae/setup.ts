@@ -40,6 +40,9 @@ export const parameters = [
 
 export const setup = (p5: P5CanvasInstance, paramValues: ParameterValues<typeof parameters>) => {
     const random = createSeededRandom(paramValues['Random Seed']);
+    const randomInterval = (min: number, max: number) => {
+        return random() * (max - min) + min;
+    };
 
     class Coords {
         x: number;
@@ -64,28 +67,33 @@ export const setup = (p5: P5CanvasInstance, paramValues: ParameterValues<typeof 
         p5.createCanvas(size, size);
         p5.background(0);
         p5.noStroke();
-        for(let sourceIndex = 0; sourceIndex < paramValues["Sources"]; sourceIndex++){
+        for (let sourceIndex = 0; sourceIndex < paramValues['Sources']; sourceIndex++) {
             // define the coordinates of a square placed somewhat randomly on the canvas
-            const squareSize = p5.random(size/4, size/2);
-            const topLeft = new Coords(p5.random(0, size - squareSize), p5.random(0, size - squareSize));
+            const squareSize = randomInterval(size / 4, size / 2);
+            const topLeft = new Coords(randomInterval(0, size - squareSize), randomInterval(0, size - squareSize));
             const initialCoords: Coords[] = [
                 topLeft,
                 new Coords(topLeft.x + squareSize, topLeft.y),
                 new Coords(topLeft.x + squareSize, topLeft.y + squareSize),
                 new Coords(topLeft.x, topLeft.y + squareSize),
             ];
-            p5.fill(p5.random(0, 256), p5.random(0, 256), p5.random(0, 256), 255 / paramValues['Layers per source']);
+            p5.fill(
+                randomInterval(0, 256),
+                randomInterval(0, 256),
+                randomInterval(0, 256),
+                255 / paramValues['Layers per source'],
+            );
             for (let layer = 0; layer < paramValues['Layers per source']; layer++) {
                 let coords = [...initialCoords];
                 for (let s = 0; s < paramValues['Deformation steps']; s++) {
                     const newCoords = [];
                     for (let i = 0; i < 4 * Math.pow(2, s); i++) {
-                        const avg = coords[i]
-                            .average(coords[(i + 1) % coords.length])
-                            .randomize(paramValues['Randomization Amount'] / Math.pow(2, s));
-                        newCoords.push(avg);
+                        const avg = coords[i].average(coords[(i + 1) % coords.length]);
+                        newCoords.push(avg.randomize(paramValues['Randomization Amount'] / Math.pow(2, s)));
                         newCoords.push(
-                            coords[(i + 1) % coords.length].randomize(paramValues['Randomization Amount'] / Math.pow(2, s)),
+                            coords[(i + 1) % coords.length].randomize(
+                                paramValues['Randomization Amount'] / Math.pow(2, s),
+                            ),
                         );
                     }
                     coords = newCoords;
@@ -97,6 +105,5 @@ export const setup = (p5: P5CanvasInstance, paramValues: ParameterValues<typeof 
                 p5.endShape(p5.CLOSE);
             }
         }
-
     };
 };

@@ -39,37 +39,37 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
     const randomInterval = (min: number, max: number) => {
         return random() * (max - min) + min;
     };
+    const flowerDensityRandom = createSeededRandom(paramValues['Random Seed'] + 1);
+    const miniStemRandom = createSeededRandom(paramValues['Random Seed'] + 2);
+    const miniStemRandomInterval = (min: number, max: number) => {
+        return miniStemRandom() * (max - min) + min;
+    };
 
     const brickHeight = paramValues['Brick Height'];
     // const brickLength = paramValues['Brick Length'];
     const startHeight = Math.floor((paramValues['Wall Height Start'] * size) / brickHeight) * brickHeight;
     const fullDrawDistanceFromCenter = paramValues['Full Draw Distance'];
-    // const centerX = size / 2;
-    // const centerY = startHeight;
-    // const alphaPerPoint = paramValues['Alpha Per Point'];
-    // const averagePointWidth = paramValues['Average Point Width'];
-    // const pointsPerPixel = paramValues['Point Density Per Pixel'];
-    // const wallBorderWidth = paramValues['Wall Border Width'];
     const gapBetweenFlowers = paramValues['Gap Between Flowers'];
     const flowerDensity = paramValues['Flower Density'];
 
     const petals: [number, number, number, [number, number]][] = [];
-    const stemsToDraw = randomInterval(3, 8);
+    const stemsToDraw = randomInterval(3, 7);
 
     for (let i = 0; i < stemsToDraw; i++) {
         p5.stroke(0);
-        const stemWidthStart = p5.random(6, 10);
-        const stemWidthEnd = p5.random(2, 3);
+        const stemWidthStart = randomInterval(5, 7);
+        const stemWidthEnd = randomInterval(2, 3);
         const startX = randomInterval(
             size / 2 - fullDrawDistanceFromCenter / 2,
             size / 2 + fullDrawDistanceFromCenter / 2,
         );
         const startY = startHeight - 2;
-        let curDirection: [number, number] = normalize([p5.random() < 0.5 ? -1 : 1, p5.random() / 2 - 0.7]);
+        let curDirection: [number, number] = normalize([random() < 0.5 ? -1 : 1, random() / 2 - 0.7]);
         let curX = startX,
             curY = startY;
-        let lastFlowerStep = 0;
-        const flowersList: [number, number, [number, number], number][] = [];
+        let lastFlowerStepLeft = 0,
+            lastFlowerStepRight = 0;
+        const flowersList: [number, number, [number, number], number, number][] = [];
         const stemSteps = randomInterval(400, 600);
         for (let step = 0; step < stemSteps; step++) {
             const prevX = curX,
@@ -83,39 +83,63 @@ export const drawFlowers = (p5: P5CanvasInstance, paramValues: ParameterValues<t
                 curDirection[0] + (p5.noise(curX / 500, curY / 500, i) - 0.5) / 10,
                 curDirection[1] + (p5.noise(curX / 500, curY / 500, i + 10) - 0.5) / 10 + gravityFactor,
             ]);
-            if (step - lastFlowerStep > gapBetweenFlowers && random() < flowerDensity) {
-                lastFlowerStep = step;
-                const miniStemLength = p5.random(p5.lerp(30, 10, step / stemSteps), p5.lerp(60, 20, step / stemSteps));
-                flowersList.push([curX, curY, curDirection, miniStemLength]);
+            // roll both dice every step (not behind the &&) so the sequence doesn't depend on the density
+            const leftRoll = flowerDensityRandom();
+            const rightRoll = flowerDensityRandom();
+            if (step - lastFlowerStepLeft > gapBetweenFlowers && leftRoll < flowerDensity && step < 0.95 * stemSteps) {
+                lastFlowerStepLeft = step;
+                const miniStemLength = miniStemRandomInterval(
+                    p5.lerp(25, 5, step / stemSteps),
+                    p5.lerp(50, 15, step / stemSteps),
+                );
+                flowersList.push([curX, curY, curDirection, miniStemLength, -p5.HALF_PI]);
+            }
+            if (
+                step - lastFlowerStepRight > gapBetweenFlowers &&
+                rightRoll < flowerDensity &&
+                step < 0.95 * stemSteps
+            ) {
+                lastFlowerStepRight = step;
+                const miniStemLength = miniStemRandomInterval(
+                    p5.lerp(25, 5, step / stemSteps),
+                    p5.lerp(50, 15, step / stemSteps),
+                );
+                flowersList.push([curX, curY, curDirection, miniStemLength, p5.HALF_PI]);
             }
         }
 
         // draw all flowers mini-stems starting from the main stem
         for (let i = 0; i < flowersList.length; i++) {
-            const miniStemWidthStart = p5.random(3, 4.5);
+            const flower = flowersList[i];
+            const miniStemLength = flower[3];
+            const miniStemWidthStart = miniStemRandomInterval(
+                p5.lerp(1.5, 3, miniStemLength / 50),
+                p5.lerp(2, 4, miniStemLength / 50),
+            );
             const miniStemWidthEnd = 1.5;
             p5.stroke(0);
-            const flower = flowersList[i];
-            const tempDirection = p5
-                .createVector(flower[2][0], flower[2][1])
-                .rotate(random() < 0.5 ? p5.HALF_PI : -p5.HALF_PI);
+            const tempDirection = p5.createVector(flower[2][0], flower[2][1]).rotate(flower[4]);
             let curDirection = [tempDirection.x, tempDirection.y];
-            const steps = flower[3];
             let curX = flower[0],
                 curY = flower[1];
-            for (let step = 0; step < steps; step++) {
+            for (let step = 0; step < miniStemLength; step++) {
                 const prevX = curX,
                     prevY = curY;
                 curX += curDirection[0];
                 curY += curDirection[1];
-                p5.strokeWeight(p5.lerp(miniStemWidthStart, miniStemWidthEnd, step / steps));
+                p5.strokeWeight(p5.lerp(miniStemWidthStart, miniStemWidthEnd, step / miniStemLength));
                 p5.line(prevX, prevY, curX, curY);
                 curDirection = normalize([
                     curDirection[0] + (p5.noise(curX / 500, curY / 500, i + 20) - 0.5) / 10,
                     curDirection[1] + (p5.noise(curX / 500, curY / 500, i + 300) - 0.5) / 10 + 0.03,
                 ]);
             }
-            petals.push([curX, curY, p5.random(size / 100, size / 65), [curDirection[0], curDirection[1]]]);
+            petals.push([
+                curX,
+                curY,
+                miniStemRandomInterval(size / 100, size / 65),
+                [curDirection[0], curDirection[1]],
+            ]);
         }
     }
 
